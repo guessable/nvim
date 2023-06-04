@@ -1,0 +1,23 @@
+{
+  "name": "example-snippets",
+  "contributes": {
+    "snippets": [
+      {
+        "language": ["cpp"],
+        "path": "./cpp.json"
+      },
+      {
+        "language": ["python"],
+        "path": "./python.json"
+      },
+      {
+        "language": ["julia"],
+        "path": "./julia.json"
+      },
+      {
+        "language": ["tex","latex"],
+        "path": "./latex.json"
+      }
+    ]
+  }
+}

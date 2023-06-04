@@ -1,0 +1,175 @@
+{
+  "begin": {
+		"prefix": "begin",
+		"body": [
+      "\\begin{$1}",
+      "\t$0",
+      "\\end{$1}"
+		],
+		"description": "env"
+	},
+  "Head": {
+		"prefix": "head",
+		"body": [
+			"%!TEX program=xelatex",
+			"%      \"   ",
+			"%    '':''",
+			"%   ___:____      |\\/|",
+			"% ,'        `.    \\  /",
+			"% |  O        \\___/  |",
+			"% ~^~^~^~^~^~^~^~^~^~^",
+			"$0"
+		],
+		"description": "Head"
+	},
+  "Equ" : {
+    "prefix": "BEQ",
+    "body": [
+      "\\begin{equation}",
+      "\t$0",
+      "\\end{equation}"
+    ],
+		"description": "equation"
+  },
+  "Equ*" : {
+    "prefix": "BSEQ",
+    "body": [
+      "\\begin{equation*}",
+      "\t$0",
+      "\\end{equation*}"
+    ],
+		"description": "equation*"
+  },
+  "align" : {
+    "prefix": "BAL",
+    "body": [
+      "\\begin{align}",
+      "\t$0",
+      "\\end{align}"
+    ],
+		"description": "align"
+  },
+  "align*" : {
+    "prefix": "BSAL",
+    "body": [
+      "\\begin{align*}",
+      "\t$0",
+      "\\end{align*}"
+    ],
+		"description": "align*"
+  },
+  "gather" : {
+    "prefix": "BGA",
+    "body": [
+      "\\begin{gather}",
+      "\t$0",
+      "\\end{gather}"
+    ],
+		"description": "gather"
+  },
+  "gather*" : {
+    "prefix": "BSGA",
+    "body": [
+      "\\begin{gather*}",
+      "\t$0",
+      "\\end{gather*}"
+    ],
+		"description": "gather*"
+  },
+  "mathrm" : {
+    "prefix": "MRM",
+    "body": [
+      "\\mathrm{$0}"
+    ],
+		"description": "\\mathrm{}"
+  },
+  "mathsf" : {
+    "prefix": "MSF",
+    "body": [
+      "\\mathsf{$0}"
+    ],
+		"description": "\\mathsf{}"
+  },
+  "mathbb" : {
+    "prefix": "MBB",
+    "body": [
+      "\\mathbb{$0}"
+    ],
+		"description": "\\mathbb{}"
+  },
+  "mathcal" : {
+    "prefix": "MCA",
+    "body": [
+      "\\mathcal{$0}"
+    ],
+		"description": "\\mathcal{}"
+  },
+  "Template": {
+		"prefix": "temp",
+		"body": [
+			"\\documentclass[10pt,openany]{book} %openany:清除所有空白页",
+			"\\usepackage{ctex} ",
+			"\\usepackage{geometry,graphicx,xcolor,color}",
+			"\\geometry{",
+			"  a4paper,",
+			"  top=25.4mm, bottom=25.4mm,",
+			"  left=20mm, right=20mm,",
+			"  headheight=2.17cm,",
+			"  headsep=4mm,",
+			"  footskip=12mm",
+			"}",
+			"\\usepackage{amssymb,amsmath,mathrsfs,amsthm,mathtools,txfonts}",
+			"\\usepackage{cases}",
+			"\\usepackage{supertabular}",
+			"\\usepackage{fancyhdr}",
+			"\\pagestyle{fancy}",
+			"\\renewcommand{\\headrulewidth}{1pt}",
+			"",
+			"\\usepackage[colorlinks,",
+			"\tlinkcolor=purple, % 目录,交叉引用颜色",
+			"\tanchorcolor=blue",
+			"\tcitecolor=blue]{hyperref}",
+			"\\usepackage{url}",
+			"\\usepackage{enumerate}",
+			"",
+			"% ------------------------------------------------------------%",
+			"% 定义定理环境",
+			"% ------------------------------------------------------------%",
+			"\\newtheorem{theorem}{\\indent 定理}[section]",
+			"\\newtheorem{lemma}[theorem]{\\indent 引理}",
+			"\\newtheorem{proposition}[theorem]{\\indent 命题}",
+			"\\newtheorem{corollary}[theorem]{\\indent 推论}",
+			"\\newtheorem{definition}{\\indent 定义}[section]",
+			"\\newtheorem{example}{\\indent 例}[section]",
+			"\\newtheorem{remark}{\\indent 注}[section]",
+			"\\newenvironment{solution}{\\begin{proof}[\\indent 解]}{\\end{proof}}",
+			"\\renewcommand{\\proofname}{\\indent 证明}",
+			"",
+			"% ------------------------------------------------------------%",
+			"% 自定义命令",
+			"% ------------------------------------------------------------%",
+			"\\newcommand{\\rd}{\\mathrm{d}}",
+			"\\newcommand{\\re}{\\mathrm{e}}",
+			"\\newcommand{\\ba}{\\boldsymbol{\\alpha}}",
+			"% ------------------------------------------------------------%",
+			"",
+			"\\title{$1}",
+			"\\author{$2}",
+			"\\date{\\today}",
+			"\\graphicspath{{./image/}}",
+			"",
+			"\\begin{document}",
+			"\\frontmatter",
+			"\\maketitle",
+			"\\tableofcontents",
+			"\\mainmatter",
+			"",
+			"% ---------------------------------------%",
+			"$0",
+			"% ---------------------------------------%",
+			"",
+			"\\end{document}"
+		],
+		"description": "template"
+	}
+}
