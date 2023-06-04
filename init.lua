@@ -25,7 +25,6 @@ vim.cmd [[au BufWritePost *.py silent exec "!python3 -m black %"]]
 -- plugins
 require("plugins")
 require("core.ui")
-require("core.telescope")
 require("core.line")
 require("core.lsp")
 require("core.cmp")
