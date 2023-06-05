@@ -32,7 +32,7 @@ npairs.add_rules({
 require("toggleterm").setup {
   open_mapping = [[<c-t>]],
   direction = 'vertical',
-  size = vim.o.columns * 0.4
+  size = 80
 }
 
 -- scroll
