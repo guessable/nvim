@@ -26,7 +26,7 @@ keymap.set("n", "<C-k>", "<C-w>k", { noremap = true, silent = true })
 keymap.set("n", "<C-j>", "<C-w>j", { noremap = true, silent = true })
 keymap.set("n", "<C-o>", "<C-w>o", { noremap = true, silent = true })
 
-keymap.set("n", "<Leader>tv", ":vsp term://zsh<CR>:res -7<CR>i", { noremap = true, silent = true })
+keymap.set("n", "<Leader>tv", ":vsp term://zsh<CR>:vertical res -14<CR>i", { noremap = true, silent = true })
 keymap.set("n", "<Leader>th", ":sp term://zsh<CR>:res -7<CR>i", { noremap = true, silent = true })
 keymap.set("t", ":q", "<C-\\><C-n>:bdelete! %<CR>", { noremap = true, silent = true })
 keymap.set("t", "<ESC>", "<C-\\><C-n>", { noremap = true, silent = true })

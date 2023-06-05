@@ -64,4 +64,3 @@ vim.cmd [[
   \ 'show_numbers' : 1,
   \}
 ]]
-

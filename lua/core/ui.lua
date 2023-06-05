@@ -98,7 +98,7 @@ dashboard.section.buttons.val = {
   dashboard.button("<Leader> f b", "  Buffers", ":Telescope buffers<CR>"),
   dashboard.button("<Leader> f w", "  Words", ":Telescope live_grep<CR>"),
   dashboard.button("<Leader> f j", "  Diagnostics", ":Telescope diagnostics<CR>"),
-  dashboard.button("q", "  Quit NVIM", ":qa<CR>"),
+  dashboard.button("q", "   Quit NVIM", ":qa<CR>"),
 }
 dashboard.section.footer.val = {
   "           e^{iπ} + 1 = 0",
