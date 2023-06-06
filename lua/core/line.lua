@@ -119,5 +119,5 @@ bufferline.setup {
 
 -- indentline
 vim.cmd [[
-  let g:indent_blankline_filetype = ['python','cpp']
+  let g:indent_blankline_filetype = ['python']
 ]]

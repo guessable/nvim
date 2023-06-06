@@ -63,6 +63,5 @@ keymap.set('n', '<Leader>cc', '<Plug>(comment_toggle_linewise_current)', { norem
 keymap.set('x', '<Leader>cc', '<Plug>(comment_toggle_linewise_visual)', { noremap = true, silent = true })
 
 keymap.set('n', '<leader>r', ':RunCode<CR>', { noremap = true, silent = true })
-keymap.set('n', '<leader>tc', ':VimtexTocToggle<CR>', { noremap = true, silent = true })
 keymap.set('n', 'j', '<Plug>(accelerated_jk_gj)', { noremap = true, silent = true })
 keymap.set('n', 'k', '<Plug>(accelerated_jk_gk)', { noremap = true, silent = true })

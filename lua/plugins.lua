@@ -48,22 +48,19 @@ local plugins = {
   'rebelot/kanagawa.nvim',
   'akinsho/bufferline.nvim',
   'nvim-lualine/lualine.nvim',
-  'lukas-reineke/indent-blankline.nvim',
+  { 'lukas-reineke/indent-blankline.nvim', ft = 'python' },
 
   'windwp/nvim-autopairs',
   'numToStr/Comment.nvim',
   'karb94/neoscroll.nvim',
   'phaazon/hop.nvim',
-  'kylechui/nvim-surround',
   'CRAG666/code_runner.nvim',
   'rainbowhxch/accelerated-jk.nvim',
   'akinsho/toggleterm.nvim',
   {
     "folke/which-key.nvim",
     event = "VeryLazy"
-  },
-
-  { 'lervag/vimtex', ft = 'tex' }
+  }
 }
 
 require("lazy").setup(plugins, {
