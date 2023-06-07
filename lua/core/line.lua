@@ -118,6 +118,9 @@ bufferline.setup {
 }
 
 -- indentline
-vim.cmd [[
-  let g:indent_blankline_filetype = ['python']
-]]
+vim.opt.list = true
+vim.opt.listchars:append "eol:↴"
+vim.g.indent_blankline_filetype = {"python"}
+require("indent_blankline").setup {
+  show_current_context = true,
+}
