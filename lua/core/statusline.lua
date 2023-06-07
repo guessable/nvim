@@ -61,7 +61,7 @@ require('lualine').setup {
     component_separators = '',
     section_separators = { left = ' ' },
     disabled_filetypes = {
-      statusline = { 'NvimTree', 'alpha', 'vimtex-toc', 'VimTex', 'toggleterm' },
+      statusline = { 'NvimTree', 'alpha', 'toggleterm' },
     },
   },
   sections = {
@@ -88,39 +88,4 @@ require('lualine').setup {
   },
   tabline = {},
   extensions = {},
-}
-
--- bufferline
-local bufferline = require('bufferline')
-bufferline.setup {
-  options = {
-    numbers = "ordinal",
-    tab_size = 10,
-    buffer_close_icon = '',
-    style_preset = {
-      bufferline.style_preset.no_italic,
-      bufferline.style_preset.no_bold
-    },
-    offsets = { {
-      filetype = "NvimTree",
-      text = "File Explorer",
-      highlight = "Directory",
-      text_align = "center"
-    },
-      {
-        filetype = "vimtex-toc",
-        text = "LaTeX TOC",
-        highlight = "Directory",
-        text_align = "center"
-      }
-    }
-  }
-}
-
--- indentline
-vim.opt.list = true
-vim.opt.listchars:append "eol:↴"
-vim.g.indent_blankline_filetype = {"python"}
-require("indent_blankline").setup {
-  show_current_context = true,
 }

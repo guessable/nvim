@@ -36,6 +36,27 @@ require 'nvim-treesitter.configs'.setup {
   }
 }
 
+-- bufferline
+local bufferline = require('bufferline')
+bufferline.setup {
+  options = {
+    numbers = "ordinal",
+    tab_size = 10,
+    buffer_close_icon = '',
+    style_preset = {
+      bufferline.style_preset.no_italic,
+      bufferline.style_preset.no_bold
+    },
+    offsets = { {
+      filetype = "NvimTree",
+      text = "File Explorer",
+      highlight = "Directory",
+      text_align = "center"
+    }
+    }
+  }
+}
+
 -- dashboard
 local alpha = require 'alpha'
 local dashboard = require 'alpha.themes.dashboard'
@@ -64,8 +85,9 @@ dashboard.section.buttons.val = {
   dashboard.button("<Leader> f f", "  Find", ":Telescope find_files<CR>"),
   dashboard.button("<Leader> f m", "  Marks", ":Telescope marks<CR>"),
   dashboard.button("<Leader> f b", "  Buffers", ":Telescope buffers<CR>"),
+  dashboard.button("<Leader> f u", "  Undotree", ":Telescope undo<CR>"),
   dashboard.button("<Leader> f w", "  Words", ":Telescope live_grep<CR>"),
-  dashboard.button("<Leader> f j", "  Diagnostics", ":Telescope diagnostics<CR>"),
+  dashboard.button("<Leader> f j", "  Diagnostics", ":TroubleToggle<CR>"),
   dashboard.button("q", "   Quit NVIM", ":qa<CR>"),
 }
 dashboard.section.footer.val = {

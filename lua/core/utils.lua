@@ -9,7 +9,25 @@ require('telescope').setup {
       },
     }
   },
+  extensions = {
+    undo = {
+
+    },
+  }
 }
+require("telescope").load_extension("undo")
+
+-- trouble
+require('trouble').setup({
+  mode = "document_diagnostics",
+  signs = {
+    error = "",
+    warning = "",
+    hint = "",
+    information = "",
+    other = "﫠"
+  },
+})
 
 -- nvim-tree
 vim.g.loaded_netrw = 1
@@ -43,6 +61,12 @@ require("nvim-tree").setup({
   },
 })
 
+-- indentline
+vim.g.indent_blankline_filetype = { "python" }
+require("indent_blankline").setup {
+  show_current_context = true,
+}
+
 -- code runner
 require('code_runner').setup({
   filetype = {
@@ -50,9 +74,6 @@ require('code_runner').setup({
     julia = 'julia'
   }
 })
-
--- autopairs
-require("nvim-autopairs").setup()
 
 -- toggleterm
 require("toggleterm").setup {
@@ -65,12 +86,3 @@ require("toggleterm").setup {
 require('neoscroll').setup({
   mappings = { '<C-b>', '<C-f>' },
 })
-
--- comment
-require('Comment').setup()
-
--- whichkey
-require("which-key").setup()
-
--- hop
-require("hop").setup()

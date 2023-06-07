@@ -12,6 +12,7 @@ opt.splitbelow = true
 opt.ignorecase = true
 opt.smartcase = true
 opt.termguicolors = true
+opt.undofile = true
 opt.signcolumn = "no"
 opt.scrolloff = 7
 opt.tabstop = 2
@@ -25,7 +26,7 @@ vim.cmd [[au BufWritePost *.py silent exec "!python3 -m black %"]]
 -- plugins
 require("plugins")
 require("core.ui")
-require("core.line")
+require("core.statusline")
 require("core.lsp")
 require("core.cmp")
 require("core.utils")

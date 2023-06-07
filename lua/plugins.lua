@@ -31,7 +31,10 @@ local plugins = {
 
   {
     'nvim-telescope/telescope.nvim',
-    dependencies = { 'nvim-lua/plenary.nvim' }
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'debugloop/telescope-undo.nvim'
+    }
   },
   {
     'nvim-tree/nvim-tree.lua',
@@ -48,19 +51,38 @@ local plugins = {
   'rebelot/kanagawa.nvim',
   'akinsho/bufferline.nvim',
   'nvim-lualine/lualine.nvim',
-  { 'lukas-reineke/indent-blankline.nvim', ft = 'python' },
+  'lukas-reineke/indent-blankline.nvim',
 
-  'windwp/nvim-autopairs',
-  'numToStr/Comment.nvim',
+  'folke/trouble.nvim',
   'karb94/neoscroll.nvim',
-  'phaazon/hop.nvim',
   'CRAG666/code_runner.nvim',
   'rainbowhxch/accelerated-jk.nvim',
   'akinsho/toggleterm.nvim',
   {
+    'windwp/nvim-autopairs',
+    config = function()
+      require("nvim-autopairs").setup()
+    end
+  },
+  {
+    'numToStr/Comment.nvim',
+    config = function()
+      require('Comment').setup()
+    end
+  },
+  {
     "folke/which-key.nvim",
-    event = "VeryLazy"
-  }
+    event = "VeryLazy",
+    config = function()
+      require("which-key").setup()
+    end
+  },
+  {
+    'phaazon/hop.nvim',
+    config = function()
+      require("hop").setup()
+    end
+  },
 }
 
 require("lazy").setup(plugins, {
