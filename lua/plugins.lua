@@ -13,8 +13,9 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 local plugins = {
-  'williamboman/mason.nvim',
   'neovim/nvim-lspconfig',
+  'williamboman/mason.nvim',
+  'williamboman/mason-lspconfig.nvim',
 
   {
     'hrsh7th/nvim-cmp',
@@ -23,7 +24,6 @@ local plugins = {
       'hrsh7th/cmp-buffer',
       'hrsh7th/cmp-path',
       'hrsh7th/cmp-cmdline',
-      'octaltree/cmp-look',
     }
   },
   'L3MON4D3/LuaSnip',
@@ -58,11 +58,10 @@ local plugins = {
   'CRAG666/code_runner.nvim',
   'rainbowhxch/accelerated-jk.nvim',
   'akinsho/toggleterm.nvim',
+  'windwp/nvim-autopairs',
   {
-    'windwp/nvim-autopairs',
-    config = function()
-      require("nvim-autopairs").setup()
-    end
+    'lervag/vimtex',
+    ft = 'tex'
   },
   {
     'numToStr/Comment.nvim',
@@ -81,6 +80,12 @@ local plugins = {
     'phaazon/hop.nvim',
     config = function()
       require("hop").setup()
+    end
+  },
+  {
+    'kylechui/nvim-surround',
+    config = function()
+      require("nvim-surround").setup()
     end
   },
 }

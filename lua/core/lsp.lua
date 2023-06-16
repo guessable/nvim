@@ -8,6 +8,9 @@ require("mason").setup({
     }
   }
 })
+require("mason-lspconfig").setup {
+  ensure_installed = { "pyright", "julials", "clangd", "texlab", "lua_ls" },
+}
 
 -- Setup language servers.
 local lspconfig = require('lspconfig')
@@ -19,6 +22,9 @@ lspconfig.julials.setup {
   capabilities = capabilities,
 }
 lspconfig.clangd.setup {
+  capabilities = capabilities,
+}
+lspconfig.texlab.setup {
   capabilities = capabilities,
 }
 lspconfig.lua_ls.setup {

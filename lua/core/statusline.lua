@@ -59,14 +59,14 @@ require('lualine').setup {
   options = {
     theme = theme,
     component_separators = '',
-    section_separators = { left = ' ' },
+    section_separators = { left = '' },
     disabled_filetypes = {
-      statusline = { 'NvimTree', 'alpha', 'toggleterm' },
+      statusline = { 'NvimTree', 'alpha', 'toggleterm', 'vimtex-toc' },
     },
   },
   sections = {
     lualine_a = {
-      { Logo, separator = { right = ' ' }, colors = { fg = '#080808' } },
+      { Logo, separator = { right = '' }, colors = { fg = '#080808' } },
     },
     lualine_b = { dir },
     lualine_c = { { 'diagnostics', symbols = { error = ' ', warn = ' ', info = ' ', hint = ' ' } } },

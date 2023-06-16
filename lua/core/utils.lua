@@ -79,10 +79,22 @@ require('code_runner').setup({
 require("toggleterm").setup {
   open_mapping = [[<c-t>]],
   direction = 'vertical',
-  size = vim.o.columns * 0.392
+  size = 85
 }
+
+-- autopairs
+require("nvim-autopairs").setup {}
+local Rule = require('nvim-autopairs.rule')
+local npairs = require('nvim-autopairs')
+npairs.add_rule(Rule("$", "$", "tex"))
 
 -- scroll
 require('neoscroll').setup({
   mappings = { '<C-b>', '<C-f>' },
 })
+
+-- vimtex
+vim.g.tex_flavor = 'latex'
+vim.g.vimtex_quickfix_mode = 0
+vim.g.vimtex_view_method = 'zathura'
+vim.g.vimtex_syntax_enabled = 0

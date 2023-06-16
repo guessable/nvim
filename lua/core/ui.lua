@@ -43,6 +43,7 @@ bufferline.setup {
     numbers = "ordinal",
     tab_size = 10,
     buffer_close_icon = '',
+    separator_style = "thick",
     style_preset = {
       bufferline.style_preset.no_italic,
       bufferline.style_preset.no_bold
@@ -91,7 +92,9 @@ dashboard.section.buttons.val = {
   dashboard.button("q", "   Quit NVIM", ":qa<CR>"),
 }
 dashboard.section.footer.val = {
+  "",
   "           e^{iπ} + 1 = 0",
+  "",
   "                  -- by Leonhard Euler"
 }
 alpha.setup(dashboard.config)
