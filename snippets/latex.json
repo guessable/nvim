@@ -22,6 +22,24 @@
 		],
 		"description": "begin...end"
 	},
+  "equation": {
+		"prefix": "BEQ",
+		"body": [
+      "\\begin{equation}",
+      "\t$0",
+      "\\end{equation}"
+		],
+		"description": "equation"
+	},
+  "equation*": {
+		"prefix": "BSEQ",
+		"body": [
+      "\\begin{equation*}",
+      "\t$0",
+      "\\end{equation*}"
+		],
+		"description": "equation*"
+	},
 	"Template": {
 		"prefix": "temp",
 		"body": [
