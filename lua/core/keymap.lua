@@ -52,10 +52,10 @@ vim.keymap.set('n', '<leader>fw', ':Telescope live_grep<CR>', opts)
 vim.keymap.set('n', '<leader>ff', ':Telescope find_files<CR>', opts)
 vim.keymap.set('n', '<leader>fb', ':Telescope buffers<CR>', opts)
 vim.keymap.set('n', '<leader>fm', ':Telescope marks<CR>', opts)
-vim.keymap.set("n", "<leader>fu", ':Telescope undo<CR>', opts)
+vim.keymap.set('n', '<leader>fj', ':Telescope diagnostics<CR>', opts)
+vim.keymap.set('n', '<leader>fs', ':Telescope lsp_document_symbols<CR>', opts)
 
 -- utils
-vim.keymap.set('n', '<leader>fj', ':TroubleToggle<CR>', opts)
 vim.keymap.set("n", "<Leader>o", ":NvimTreeToggle<CR>", opts)
 vim.keymap.set("n", "<Leader>ss", ":HopChar2<CR>", opts)
 vim.keymap.set("n", "<Leader>ww", ":HopWord<CR>", opts)
@@ -66,4 +66,3 @@ vim.keymap.set('x', '<Leader>cc', '<Plug>(comment_toggle_linewise_visual)', opts
 vim.keymap.set('n', '<leader>r', ':RunCode<CR>', opts)
 vim.keymap.set('n', 'j', '<Plug>(accelerated_jk_gj)', opts)
 vim.keymap.set('n', 'k', '<Plug>(accelerated_jk_gk)', opts)
-vim.keymap.set("n", "<Leader>tc", ":VimtexTocToggle<CR>", opts)

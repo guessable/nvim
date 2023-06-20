@@ -1,23 +1,21 @@
 -- setting
-local opt = vim.opt
-
-opt.autochdir = true
-opt.autoread = true
-opt.relativenumber = true
-opt.number = true
-opt.expandtab = true
-opt.autoindent = true
-opt.splitright = true
-opt.splitbelow = true
-opt.ignorecase = true
-opt.smartcase = true
-opt.termguicolors = true
-opt.undofile = true
-opt.signcolumn = "no"
-opt.scrolloff = 7
-opt.tabstop = 2
-opt.shiftwidth = 2
-opt.mouse:append("a")
+vim.opt.autochdir = true
+vim.opt.autoread = true
+vim.opt.relativenumber = true
+vim.opt.number = true
+vim.opt.expandtab = true
+vim.opt.autoindent = true
+vim.opt.splitright = true
+vim.opt.splitbelow = true
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
+vim.opt.termguicolors = true
+vim.opt.undofile = true
+vim.opt.signcolumn = "no"
+vim.opt.scrolloff = 7
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.mouse:append("a")
 
 vim.cmd [[au TextYankPost * silent! lua vim.highlight.on_yank {higroup="IncSearch", timeout=150}]]
 vim.cmd [[au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif]]

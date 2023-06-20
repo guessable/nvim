@@ -2,8 +2,8 @@
 require('kanagawa').setup({
   commentStyle = { italic = false },
   keywordStyle = { italic = false },
-  typeStyle = { bold = true },
-  functionStyle = { bold = false },
+  typeStyle = { bold = false },
+  functionStyle = { bold = true },
   colors = {
     theme = {
       all = {
@@ -24,11 +24,13 @@ require("kanagawa").load("wave")
 
 -- treesitter
 require 'nvim-treesitter.configs'.setup {
-  ensure_installed = { "python", "cpp", "lua", "julia", "latex" },
+  ensure_installed = { "python", "cpp", "lua", "julia" },
   highlight = {
     enable = true,
   },
   indent = { enable = true },
+  context_commentstring = { enable = true, enable_autocmd = false },
+  matchup = { enable = true },
   rainbow = {
     enable = true,
     query = 'rainbow-parens',
@@ -86,10 +88,10 @@ dashboard.section.buttons.val = {
   dashboard.button("<Leader> f f", "  Find", ":Telescope find_files<CR>"),
   dashboard.button("<Leader> f m", "  Marks", ":Telescope marks<CR>"),
   dashboard.button("<Leader> f b", "  Buffers", ":Telescope buffers<CR>"),
-  dashboard.button("<Leader> f u", "  Undotree", ":Telescope undo<CR>"),
   dashboard.button("<Leader> f w", "  Words", ":Telescope live_grep<CR>"),
-  dashboard.button("<Leader> f j", "  Diagnostics", ":TroubleToggle<CR>"),
-  dashboard.button("q", "   Quit NVIM", ":qa<CR>"),
+  dashboard.button("<Leader> f s", "  Symbols", ":Telescope lsp_document_symbols<CR>"),
+  dashboard.button("<Leader> f j", "  Diagnostics", ":Telescope diagnostics<CR>"),
+  dashboard.button("q", "  Quit NVIM", ":qa<CR>"),
 }
 dashboard.section.footer.val = {
   "",

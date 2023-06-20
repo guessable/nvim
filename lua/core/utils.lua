@@ -9,25 +9,7 @@ require('telescope').setup {
       },
     }
   },
-  extensions = {
-    undo = {
-
-    },
-  }
 }
-require("telescope").load_extension("undo")
-
--- trouble
-require('trouble').setup({
-  mode = "document_diagnostics",
-  signs = {
-    error = "",
-    warning = "",
-    hint = "",
-    information = "",
-    other = "﫠"
-  },
-})
 
 -- nvim-tree
 vim.g.loaded_netrw = 1
@@ -81,20 +63,3 @@ require("toggleterm").setup {
   direction = 'vertical',
   size = 85
 }
-
--- autopairs
-require("nvim-autopairs").setup {}
-local Rule = require('nvim-autopairs.rule')
-local npairs = require('nvim-autopairs')
-npairs.add_rule(Rule("$", "$", "tex"))
-
--- scroll
-require('neoscroll').setup({
-  mappings = { '<C-b>', '<C-f>' },
-})
-
--- vimtex
-vim.g.tex_flavor = 'latex'
-vim.g.vimtex_quickfix_mode = 0
-vim.g.vimtex_view_method = 'zathura'
-vim.g.vimtex_syntax_enabled = 0

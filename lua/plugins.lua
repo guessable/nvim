@@ -15,8 +15,6 @@ vim.opt.rtp:prepend(lazypath)
 local plugins = {
   'neovim/nvim-lspconfig',
   'williamboman/mason.nvim',
-  'williamboman/mason-lspconfig.nvim',
-
   {
     'hrsh7th/nvim-cmp',
     dependencies = {
@@ -33,9 +31,14 @@ local plugins = {
     'nvim-telescope/telescope.nvim',
     dependencies = {
       'nvim-lua/plenary.nvim',
-      'debugloop/telescope-undo.nvim'
     }
   },
+
+  {
+    'rebelot/kanagawa.nvim',
+    priority = 1000
+  },
+
   {
     'nvim-tree/nvim-tree.lua',
     dependencies = { 'nvim-tree/nvim-web-devicons' }
@@ -48,20 +51,26 @@ local plugins = {
   'HiPhish/nvim-ts-rainbow2',
 
   'goolord/alpha-nvim',
-  'rebelot/kanagawa.nvim',
   'akinsho/bufferline.nvim',
   'nvim-lualine/lualine.nvim',
   'lukas-reineke/indent-blankline.nvim',
 
-  'folke/trouble.nvim',
-  'karb94/neoscroll.nvim',
   'CRAG666/code_runner.nvim',
   'rainbowhxch/accelerated-jk.nvim',
   'akinsho/toggleterm.nvim',
-  'windwp/nvim-autopairs',
   {
-    'lervag/vimtex',
-    ft = 'tex'
+    'karb94/neoscroll.nvim',
+    config = function()
+      require('neoscroll').setup({
+        mappings = { '<C-b>', '<C-f>' },
+      })
+    end
+  },
+  {
+    'windwp/nvim-autopairs',
+    config = function()
+      require('nvim-autopairs').setup()
+    end
   },
   {
     'numToStr/Comment.nvim',

@@ -13,10 +13,6 @@
       {
         "language": ["julia"],
         "path": "./julia.json"
-      },
-      {
-        "language": ["tex","latex"],
-        "path": "./latex.json"
       }
     ]
   }
