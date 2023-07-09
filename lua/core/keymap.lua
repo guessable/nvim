@@ -57,12 +57,16 @@ vim.keymap.set('n', '<leader>fs', ':Telescope lsp_document_symbols<CR>', opts)
 
 -- utils
 vim.keymap.set("n", "<Leader>o", ":NvimTreeToggle<CR>", opts)
-vim.keymap.set("n", "<Leader>ss", ":HopChar2<CR>", opts)
-vim.keymap.set("n", "<Leader>ww", ":HopWord<CR>", opts)
 
 vim.keymap.set('n', '<Leader>cc', '<Plug>(comment_toggle_linewise_current)', opts)
 vim.keymap.set('x', '<Leader>cc', '<Plug>(comment_toggle_linewise_visual)', opts)
 
 vim.keymap.set('n', '<leader>r', ':RunCode<CR>', opts)
+
 vim.keymap.set('n', 'j', '<Plug>(accelerated_jk_gj)', opts)
 vim.keymap.set('n', 'k', '<Plug>(accelerated_jk_gk)', opts)
+
+vim.keymap.set("n", "<ESC>", function()
+  local current_window = vim.fn.win_getid()
+  require("leap").leap { target_windows = { current_window } }
+end)

@@ -24,7 +24,7 @@ require("kanagawa").load("wave")
 
 -- treesitter
 require 'nvim-treesitter.configs'.setup {
-  ensure_installed = { "python", "cpp", "lua", "julia" },
+  ensure_installed = { "python", "cpp", "lua", "julia", "latex" },
   highlight = {
     enable = true,
   },

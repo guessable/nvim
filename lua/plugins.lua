@@ -56,8 +56,10 @@ local plugins = {
   'lukas-reineke/indent-blankline.nvim',
 
   'CRAG666/code_runner.nvim',
+  'ggandor/leap.nvim',
   'rainbowhxch/accelerated-jk.nvim',
   'akinsho/toggleterm.nvim',
+  'Bekaboo/dropbar.nvim',
   {
     'karb94/neoscroll.nvim',
     config = function()
@@ -83,12 +85,6 @@ local plugins = {
     event = "VeryLazy",
     config = function()
       require("which-key").setup()
-    end
-  },
-  {
-    'phaazon/hop.nvim',
-    config = function()
-      require("hop").setup()
     end
   },
   {

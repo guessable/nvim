@@ -45,9 +45,19 @@ require("nvim-tree").setup({
 
 -- indentline
 vim.g.indent_blankline_filetype = { "python" }
-require("indent_blankline").setup {
+require("indent_blankline").setup({
   show_current_context = true,
-}
+})
+
+-- leap
+require("leap").setup({
+  opts = {
+    highlight_unlabeled_phase_one_targets = true,
+    safe_labels = {},
+    labels = { 'a', 'r', 's', 't', 'n', 'e', 'i', 'o', 'w', 'f', 'u', 'y', 'd', 'h' },
+  }
+})
+vim.api.nvim_set_hl(0, 'LeapBackdrop', { link = 'Comment' })
 
 -- code runner
 require('code_runner').setup({
@@ -58,8 +68,8 @@ require('code_runner').setup({
 })
 
 -- toggleterm
-require("toggleterm").setup {
+require("toggleterm").setup({
   open_mapping = [[<c-t>]],
   direction = 'vertical',
   size = 85
-}
+})

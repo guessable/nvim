@@ -56,18 +56,35 @@ cmp.setup({
   mapping = cmp.mapping.preset.insert({
     ['<C-b>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<CR>'] = cmp.mapping.confirm({ select = false }),
-    ['<Tab>'] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_next_item()
-      elseif luasnip.expand_or_jumpable() then
-        luasnip.expand_or_jump()
-      elseif has_words_before() then
-        cmp.complete()
-      else
-        fallback()
+    ['<CR>'] = cmp.mapping({
+      i = function(fallback)
+        if cmp.visible() and cmp.get_active_entry() then
+          cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
+        else
+          fallback()
+        end
       end
-    end, { "i", "s" }),
+    }),
+    ["<Tab>"] = cmp.mapping({
+      i = function(fallback)
+        if cmp.visible() then
+          cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
+        elseif has_words_before() then
+          cmp.complete()
+        else
+          fallback()
+        end
+      end,
+    }),
+    ["<S-Tab>"] = cmp.mapping({
+      i = function(fallback)
+        if cmp.visible() then
+          cmp.select_prev_item({ behavior = cmp.SelectBehavior.Insert })
+        else
+          fallback()
+        end
+      end,
+    }),
   }),
   sources = cmp.config.sources({
     { name = 'luasnip' },
