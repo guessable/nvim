@@ -73,3 +73,12 @@ require("toggleterm").setup({
   direction = 'vertical',
   size = 85
 })
+
+-- scrollbar
+require("scrollbar").setup({
+  show = true,
+  show_in_active_only = true,
+  set_highlights = true,
+  folds = 1000,
+  max_lines = false,
+})

@@ -66,11 +66,11 @@ require('lualine').setup {
   },
   sections = {
     lualine_a = {
-      { Logo, separator = { right = '' }, colors = { fg = '#080808' } },
+      { Logo, separator = { right = ' ' }, colors = { fg = '#080808' } },
     },
     lualine_b = { dir },
     lualine_c = { { 'diagnostics', symbols = { error = ' ', warn = ' ', info = ' ', hint = ' ' } } },
-    lualine_x = { 'branch', 'progress' },
+    lualine_x = { 'branch' },
     lualine_y = { { location_icon, color = { bg = colors.green, fg = colors.black }, separator = { left = '' } },
       { 'location',    color = { bg = colors.transparent, fg = colors.white } } },
     lualine_z = {

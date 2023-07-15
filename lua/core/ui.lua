@@ -24,7 +24,7 @@ require("kanagawa").load("wave")
 
 -- treesitter
 require 'nvim-treesitter.configs'.setup {
-  ensure_installed = { "python", "cpp", "lua", "julia", "latex" },
+  ensure_installed = { "python", "cpp", "lua", "julia" },
   highlight = {
     enable = true,
   },
@@ -105,7 +105,7 @@ alpha.setup(dashboard.config)
 require("nvim-web-devicons").set_icon {
   py = {
     icon = '',
-    color = "#d19a66",
+    color = "#DAA520",
     cterm_color = "65",
     name = "Python"
   }
