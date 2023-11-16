@@ -95,13 +95,3 @@ dashboard.section.footer.val = {
   "                  -- by Leonhard Euler"
 }
 alpha.setup(dashboard.config)
-
--- icon
-require("nvim-web-devicons").set_icon {
-  py = {
-    icon = '',
-    color = "#DAA520",
-    cterm_color = "65",
-    name = "Python"
-  }
-}
