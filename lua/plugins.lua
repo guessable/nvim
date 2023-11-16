@@ -79,13 +79,6 @@ local plugins = {
     end
   },
   {
-    "folke/which-key.nvim",
-    event = "VeryLazy",
-    config = function()
-      require("which-key").setup()
-    end
-  },
-  {
     'kylechui/nvim-surround',
     config = function()
       require("nvim-surround").setup()
