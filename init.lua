@@ -20,6 +20,8 @@ vim.opt.mouse:append("a")
 vim.cmd [[au TextYankPost * silent! lua vim.highlight.on_yank {higroup="IncSearch", timeout=150}]]
 vim.cmd [[au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif]]
 vim.cmd [[au BufWritePost *.py silent exec "!python3 -m black %"]]
+vim.cmd [[au BufWritePost *.jl silent exec "lua vim.lsp.buf.format()"]]
+vim.cmd [[au BufWritePost *.cpp,*.hpp,*.h,*.cc silent exec "lua vim.lsp.buf.format()"]]
 
 -- plugins
 require("plugins")
