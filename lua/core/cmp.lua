@@ -9,26 +9,26 @@ end
 require("luasnip.loaders.from_vscode").load({ paths = "~/.config/nvim/snippets" })
 
 local kind_icons = {
-  Class = " ",
+  Class = "󰕳 ",
   Color = " ",
   Constant = " ",
   Constructor = " ",
   Enum = " ",
   EnumMember = " ",
-  Field = " ",
+  Field = " ",
   File = " ",
   Folder = " ",
   Function = " ",
-  Interface = "ﰮ ",
-  Keyword = " ",
+  Interface = " ",
+  Keyword = " ",
   Method = "ƒ ",
-  Module = " ",
+  Module = "󰕳 ",
   Property = " ",
-  Snippet = "﬌ ",
+  Snippet = " ",
   Struct = " ",
   Text = " ",
   Unit = " ",
-  Value = " ",
+  Value = " ",
   Variable = " ",
 }
 cmp.setup({
@@ -65,26 +65,19 @@ cmp.setup({
         end
       end
     }),
-    ["<Tab>"] = cmp.mapping({
-      i = function(fallback)
-        if cmp.visible() then
-          cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
-        elseif has_words_before() then
-          cmp.complete()
-        else
-          fallback()
-        end
-      end,
-    }),
-    ["<S-Tab>"] = cmp.mapping({
-      i = function(fallback)
-        if cmp.visible() then
-          cmp.select_prev_item({ behavior = cmp.SelectBehavior.Insert })
-        else
-          fallback()
-        end
-      end,
-    }),
+    ["<Tab>"] = cmp.mapping(function(fallback)
+      -- This little snippet will confirm with tab, and if no entry is selected, will confirm the first item
+      if cmp.visible() then
+        local entry = cmp.get_selected_entry()
+	if not entry then
+	  cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+	else
+	  cmp.confirm()
+	end
+      else
+        fallback()
+      end
+    end, {"i","s","c",}),
   }),
   sources = cmp.config.sources({
     { name = 'luasnip' },

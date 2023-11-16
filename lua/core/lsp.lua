@@ -1,14 +1,3 @@
--- lsp installer
-require("mason").setup({
-  ui = {
-    icons = {
-      package_installed = "✓",
-      package_pending = "",
-      package_uninstalled = "✗"
-    }
-  }
-})
-
 -- Setup language servers.
 local lspconfig = require('lspconfig')
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
@@ -19,9 +8,6 @@ lspconfig.julials.setup {
   capabilities = capabilities,
 }
 lspconfig.clangd.setup {
-  capabilities = capabilities,
-}
-lspconfig.lua_ls.setup {
   capabilities = capabilities,
 }
 
@@ -55,9 +41,9 @@ vim.api.nvim_create_autocmd('LspAttach', {
   end,
 })
 vim.diagnostic.config({
-  virtual_text = false,
+  virtual_text = true,
   signs = false,
-  underline = false,
+  underline = true,
   update_in_insert = false,
   severity_sort = false,
 })

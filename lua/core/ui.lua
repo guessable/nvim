@@ -31,11 +31,6 @@ require 'nvim-treesitter.configs'.setup {
   indent = { enable = true },
   context_commentstring = { enable = true, enable_autocmd = false },
   matchup = { enable = true },
-  rainbow = {
-    enable = true,
-    query = 'rainbow-parens',
-    strategy = require('ts-rainbow').strategy.global,
-  }
 }
 
 -- bufferline

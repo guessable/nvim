@@ -14,7 +14,6 @@ vim.opt.rtp:prepend(lazypath)
 
 local plugins = {
   'neovim/nvim-lspconfig',
-  'williamboman/mason.nvim',
   {
     'hrsh7th/nvim-cmp',
     dependencies = {
@@ -48,7 +47,6 @@ local plugins = {
     'nvim-treesitter/nvim-treesitter',
     cmd = 'TSUpdate'
   },
-  'HiPhish/nvim-ts-rainbow2',
 
   'goolord/alpha-nvim',
   'akinsho/bufferline.nvim',
@@ -60,7 +58,6 @@ local plugins = {
   'ggandor/leap.nvim',
   'rainbowhxch/accelerated-jk.nvim',
   'akinsho/toggleterm.nvim',
-  'Bekaboo/dropbar.nvim',
   {
     'karb94/neoscroll.nvim',
     config = function()

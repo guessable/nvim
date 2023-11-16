@@ -44,9 +44,8 @@ require("nvim-tree").setup({
 })
 
 -- indentline
-vim.g.indent_blankline_filetype = { "python" }
-require("indent_blankline").setup({
-  show_current_context = true,
+require("ibl").setup({
+  exclude = {filetypes = { "lua","julia","cpp" }},
 })
 
 -- leap
