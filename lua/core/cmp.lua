@@ -65,18 +65,22 @@ cmp.setup({
         end
       end
     }),
-    ["<Tab>"] = cmp.mapping(function(fallback)
+    ['<Tab>'] = cmp.mapping(function(fallback)
       if cmp.visible() then
-        local entry = cmp.get_selected_entry()
-	if not entry then
-	  cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
-	else
-	  cmp.confirm()
-	end
+        if #cmp.get_entries() == 1 then
+          cmp.confirm({ select = true })
+        else
+          cmp.select_next_item()
+        end
+      elseif has_words_before() then
+        cmp.complete()
+        if #cmp.get_entries() == 1 then
+          cmp.confirm({ select = true })
+        end
       else
         fallback()
       end
-    end, {"i","s","c",}),
+    end, { "i", "s" }),
   }),
   sources = cmp.config.sources({
     { name = 'luasnip' },
