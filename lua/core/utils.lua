@@ -46,6 +46,12 @@ require("nvim-tree").setup({
 -- indentline
 require("ibl").setup({
   exclude = {filetypes = { "lua","julia","cpp" }},
+  indent = {char = "┊" },
+  scope = {
+   show_start = false,
+   show_end = false,
+   highlight = { "Function", "Label" },
+  }
 })
 
 -- leap
