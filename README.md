@@ -6,3 +6,4 @@
 * cpp -> clangd
 
 * julia -> julials
+  > add LanguageServer
