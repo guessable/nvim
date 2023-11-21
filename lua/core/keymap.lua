@@ -47,13 +47,13 @@ vim.keymap.set("n", "<Leader>8", "<Cmd>BufferLineGoToBuffer 8<CR>", opts)
 vim.keymap.set("n", "<Leader>9", "<Cmd>BufferLineGoToBuffer 9<CR>", opts)
 
 -- telescope
-vim.keymap.set('n', '<leader>fh', ':Telescope oldfiles<CR>', opts)
-vim.keymap.set('n', '<leader>fw', ':Telescope live_grep<CR>', opts)
-vim.keymap.set('n', '<leader>ff', ':Telescope find_files<CR>', opts)
-vim.keymap.set('n', '<leader>fb', ':Telescope buffers<CR>', opts)
-vim.keymap.set('n', '<leader>fm', ':Telescope marks<CR>', opts)
-vim.keymap.set('n', '<leader>fj', ':Telescope diagnostics<CR>', opts)
-vim.keymap.set('n', '<leader>fs', ':Telescope lsp_document_symbols<CR>', opts)
+vim.keymap.set('n', '<Leader>fh', ':Telescope oldfiles<CR>', opts)
+vim.keymap.set('n', '<Leader>fw', ':Telescope live_grep<CR>', opts)
+vim.keymap.set('n', '<Leader>ff', ':Telescope find_files<CR>', opts)
+vim.keymap.set('n', '<Leader>fb', ':Telescope buffers<CR>', opts)
+vim.keymap.set('n', '<Leader>fm', ':Telescope marks<CR>', opts)
+vim.keymap.set('n', '<Leader>fj', ':Telescope diagnostics<CR>', opts)
+vim.keymap.set('n', '<Leader>fs', ':Telescope lsp_document_symbols<CR>', opts)
 
 -- utils
 vim.keymap.set("n", "<Leader>o", ":NvimTreeToggle<CR>", opts)
@@ -61,12 +61,12 @@ vim.keymap.set("n", "<Leader>o", ":NvimTreeToggle<CR>", opts)
 vim.keymap.set('n', '<C-_>', '<Plug>(comment_toggle_linewise_current)', opts) -- c-/
 vim.keymap.set('x', '<C-_>', '<Plug>(comment_toggle_linewise_visual)', opts)
 
-vim.keymap.set('n', '<leader>r', ':RunCode<CR>', opts)
+vim.keymap.set('n', '<Leader>r', ':RunCode<CR>', opts)
 
 vim.keymap.set('n', 'j', '<Plug>(accelerated_jk_gj)', opts)
 vim.keymap.set('n', 'k', '<Plug>(accelerated_jk_gk)', opts)
 
-vim.keymap.set("n", "<ESC>", function()
+vim.keymap.set("n", "<Leader><Leader>", function()
   local current_window = vim.fn.win_getid()
   require("leap").leap { target_windows = { current_window } }
 end)
