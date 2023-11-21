@@ -55,6 +55,7 @@ local plugins = {
   'nvim-lualine/lualine.nvim',
   'lukas-reineke/indent-blankline.nvim',
   'petertriho/nvim-scrollbar',
+  'Bekaboo/dropbar.nvim',
 
   'CRAG666/code_runner.nvim',
   'ggandor/leap.nvim',
