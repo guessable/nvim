@@ -14,6 +14,7 @@ vim.opt.rtp:prepend(lazypath)
 
 local plugins = {
   'neovim/nvim-lspconfig',
+  'j-hui/fidget.nvim',
   {
     'hrsh7th/nvim-cmp',
     dependencies = {
@@ -37,6 +38,7 @@ local plugins = {
     'rebelot/kanagawa.nvim',
     priority = 1000
   },
+  'ellisonleao/gruvbox.nvim',
 
   {
     'nvim-tree/nvim-tree.lua',
