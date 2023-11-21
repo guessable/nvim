@@ -9,28 +9,72 @@ end
 require("luasnip.loaders.from_vscode").load({ paths = "~/.config/nvim/snippets" })
 
 local kind_icons = {
-  Class = "󰕳 ",
-  Color = " ",
-  Constant = " ",
-  Constructor = " ",
-  Enum = " ",
-  EnumMember = " ",
-  Field = " ",
-  File = " ",
-  Folder = " ",
-  Function = " ",
-  Interface = " ",
-  Keyword = " ",
-  Method = "ƒ ",
-  Module = "󰕳 ",
-  Property = " ",
-  Snippet = " ",
-  Struct = " ",
-  Text = " ",
-  Unit = " ",
-  Value = " ",
-  Variable = " ",
+  File = "󰈙",
+  Module = "󰏗", -- ""
+  Namespace = "󰌗",
+  Snippet = "",
+  Package = "󰆦",
+  Class = "", -- 󰌗 󰠱
+  Method = "󰆧",
+  Property = "󰜢", --  
+  Keyword = "󰌋",
+  Field = "", --󰜢" 
+  Constructor = "",
+  Enum = "󰕘", -- ""
+  Interface = "", --  󰕘
+  Function = "󰊕",
+  Variable = "", -- 󰀫 
+  Constant = "󰏿",
+  String = "󰉾",
+  Number = "󰎠",
+  Boolean = "",
+  Array = "󰅪",
+  Object = "󰅩",
+  Key = "󰌋",
+  Null = "󰟢", -- 󰢤
+  EnumMember = "",
+  Struct = "󰙅", -- "󰌗 "
+  Event = "",
+  Operator = "󰆕",
+  TypeParameter = "󰊄",
+  Text = "󰉿",
+  Unit = "󰑭",
+  Value = "󰎠",
+  Color = "󰏘",
+  Reference = "󰈇",
+  Folder = "󰉋",
+  MarkdownH1 = "󰉫",
+  MarkdownH2 = "󰉬",
+  MarkdownH3 = "󰉭",
+  MarkdownH4 = "󰉮",
+  MarkdownH5 = "󰉯",
+  MarkdownH6 = "󰉰",
+  Call = "󰃷",
+  BreakStatement = "󰙧",
+  CaseStatement = "󱃙",
+  ContinueStatement = "→",
+  Copilot = "",
+  Declaration = "󰙠",
+  Delete = "󰩺",
+  DoStatement = "󰑖",
+  ForStatement = "󰑖",
+  Identifier = "󰀫",
+  IfStatement = "󰇉",
+  List = "󰅪",
+  Log = "󰦪",
+  Lsp = "",
+  Macro = "󰁌",
+  Regex = "",
+  Repeat = "󰑖",
+  Scope = "󰅩",
+  Specifier = "󰦪",
+  Statement = "󰅩",
+  SwitchStatement = "󰺟",
+  Terminal = "",
+  Type = "",
+  WhileStatement = "󰑖",
 }
+
 cmp.setup({
   snippet = {
     expand = function(args)
@@ -43,6 +87,10 @@ cmp.setup({
   },
   formatting = {
     format = function(entry, vim_item)
+      local MAX_LABEL_WIDTH = 30
+      if #vim_item.abbr > MAX_LABEL_WIDTH then
+        vim_item.abbr = vim.fn.strcharpart(vim_item.abbr, 0, MAX_LABEL_WIDTH) .. "..."
+      end
       vim_item.kind = string.format('%s %s', kind_icons[vim_item.kind], vim_item.kind)
       vim_item.menu = ({
         buffer = "[Buffer]",
@@ -72,6 +120,7 @@ cmp.setup({
         else
           cmp.select_next_item()
         end
+      elseif snippy.can_expand_or_advance() then
       elseif has_words_before() then
         cmp.complete()
         if #cmp.get_entries() == 1 then
@@ -89,7 +138,6 @@ cmp.setup({
     { name = 'buffer' },
   })
 })
-
 cmp.setup.cmdline({ '/', '?' }, {
   mapping = cmp.mapping.preset.cmdline(),
   sources = {
