@@ -14,7 +14,6 @@ vim.opt.rtp:prepend(lazypath)
 
 local plugins = {
   'neovim/nvim-lspconfig',
-  'j-hui/fidget.nvim',
   {
     'hrsh7th/nvim-cmp',
     dependencies = {
@@ -26,20 +25,27 @@ local plugins = {
   },
   'L3MON4D3/LuaSnip',
   'saadparwaiz1/cmp_luasnip',
-
   {
     'nvim-telescope/telescope.nvim',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-    }
+      dependencies = { 'nvim-lua/plenary.nvim' },
+    config = function()
+      local actions = require "telescope.actions"
+      require('telescope').setup {
+        defaults = {
+          prompt_prefix = ' ',
+          mappings = {
+            i = {
+              ['<Leader>v'] = actions.select_vertical
+            },
+          }
+        },
+      }
+    end
   },
-
   {
     'rebelot/kanagawa.nvim',
     priority = 1000
   },
-  'ellisonleao/gruvbox.nvim',
-
   {
     'nvim-tree/nvim-tree.lua',
     dependencies = { 'nvim-tree/nvim-web-devicons' }
@@ -53,21 +59,76 @@ local plugins = {
   'goolord/alpha-nvim',
   'akinsho/bufferline.nvim',
   'nvim-lualine/lualine.nvim',
-  'lukas-reineke/indent-blankline.nvim',
-  'petertriho/nvim-scrollbar',
   'Bekaboo/dropbar.nvim',
-
-  'CRAG666/code_runner.nvim',
-  'ggandor/leap.nvim',
   'rainbowhxch/accelerated-jk.nvim',
-  'akinsho/toggleterm.nvim',
+
+  {
+    'lukas-reineke/indent-blankline.nvim',
+    config = function()
+      require("ibl").setup({
+        exclude = {filetypes = { "lua","julia","cpp" }},
+        indent = {char = "┊" },
+        scope = {
+         show_start = false,
+         show_end = false,
+         highlight = { "Function", "Label" },
+        }
+      })
+    end
+  },
+  {
+    'petertriho/nvim-scrollbar',
+     config = function()
+      require("scrollbar").setup({
+        show = true,
+        show_in_active_only = true,
+        set_highlights = true,
+        folds = 1000,
+        max_lines = false,
+      })
+    end
+  },
+  {
+    'CRAG666/code_runner.nvim',
+    config = function()
+      require('code_runner').setup({
+        filetype = {
+          python = "python3 -u",
+          julia = 'julia'
+        }
+      })
+    end
+  },
+  {
+    'ggandor/leap.nvim',
+    config = function()
+      require("leap").setup({
+        opts = {
+          highlight_unlabeled_phase_one_targets = true,
+          safe_labels = {},
+          labels = { 'a', 'r', 's', 't', 'n', 'e', 'i', 'o', 'w', 'f', 'u', 'y', 'd', 'h' },
+        }
+      })
+      vim.api.nvim_set_hl(0, 'LeapBackdrop', { link = 'Comment' })
+    end
+  },
+  {
+    'akinsho/toggleterm.nvim',
+    config = function()
+      require("toggleterm").setup({
+        open_mapping = [[<c-t>]],
+        direction = 'vertical',
+        size = 0.5
+      })
+    end
+  },
   {
     'karb94/neoscroll.nvim',
-    config = function()
+     config = function()
       require('neoscroll').setup({
         mappings = { '<C-b>', '<C-f>' },
       })
-    end
+     end
   },
   {
     'windwp/nvim-autopairs',

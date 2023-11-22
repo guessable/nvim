@@ -35,56 +35,63 @@ local function Logo()
   return ' CT'
 end
 
-local function clock()
-  return ' '
-end
-
-local function location_icon()
-  return ' '
+local function lsp_icon()
+  return ' LSP:'
 end
 
 local function infinity()
   return ' '
 end
 
-local function time()
-  return os.date("%R")
-end
-
 local function dir()
   return " " .. vim.fn.expand('%:p:h:t')
+end
+
+local function lsp()
+  local msg = 'No Active Lsp'
+  local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
+  local clients = vim.lsp.get_active_clients()
+  if next(clients) == nil then
+    return msg
+  end
+  for _, client in ipairs(clients) do
+    local filetypes = client.config.filetypes
+    if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
+      return client.name
+    end
+  end
+  return msg
 end
 
 require('lualine').setup {
   options = {
     theme = theme,
     component_separators = '',
-    section_separators = { left = '' },
+    section_separators = { left = '' },
     disabled_filetypes = {
       statusline = { 'NvimTree', 'alpha', 'toggleterm', 'vimtex-toc' },
     },
   },
   sections = {
     lualine_a = {
-      { Logo, separator = { right = ' ' }, colors = { fg = '#080808' } },
+      { Logo, separator = { right = '' }, colors = { fg = '#080808' } },
     },
     lualine_b = { dir },
     lualine_c = { { 'diagnostics', symbols = { error = ' ', warn = ' ', info = ' ', hint = ' ' } } },
     lualine_x = { 'branch' },
-    lualine_y = { { location_icon, color = { bg = colors.green, fg = colors.black }, separator = { left = '' } },
-      { 'location',    color = { bg = colors.transparent, fg = colors.white } } },
+    lualine_y = {},
     lualine_z = {
-      { clock, separator = { left = '' },                          color = { bg = colors.blue } },
-      { time,  color = { bg = colors.transparent, fg = colors.white } },
+      { lsp_icon, separator = { left = '' },                          color = { bg = colors.blue } },
+      { lsp, color = { bg = colors.transparent, fg = colors.white } },
     },
   },
   inactive_sections = {
-    lualine_a = { { infinity, color = { bg = "#008B8B", fg = colors.black }, separator = { right = '' } } },
+    lualine_a = { { infinity, color = { bg = "#008B8B", fg = colors.black }, separator = { right = '' } } },
     lualine_b = {},
     lualine_c = {},
     lualine_x = {},
     lualine_y = {},
-    lualine_z = { { 'filename', color = { bg = "#008B8B", fg = colors.black }, separator = { left = '' } } },
+    lualine_z = { { 'filename', color = { bg = "#008B8B", fg = colors.black }, separator = { left = '' } } },
   },
   tabline = {},
   extensions = {},
