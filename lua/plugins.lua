@@ -59,7 +59,6 @@ local plugins = {
   'goolord/alpha-nvim',
   'akinsho/bufferline.nvim',
   'nvim-lualine/lualine.nvim',
-  'Bekaboo/dropbar.nvim',
   'rainbowhxch/accelerated-jk.nvim',
 
   {
@@ -118,7 +117,7 @@ local plugins = {
       require("toggleterm").setup({
         open_mapping = [[<c-t>]],
         direction = 'vertical',
-        size = 0.5
+        size = 90
       })
     end
   },

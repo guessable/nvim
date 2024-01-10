@@ -74,14 +74,14 @@ require('lualine').setup {
   },
   sections = {
     lualine_a = {
-      { Logo, separator = { right = '' }, colors = { fg = '#080808' } },
+      { Logo, separator = { right = '' }, colors = { fg = '#080808' } },
     },
-    lualine_b = { dir },
+    lualine_b = { {dir,separator = { right = '' },} },
     lualine_c = { { 'diagnostics', symbols = { error = ' ', warn = ' ', info = ' ', hint = ' ' } } },
     lualine_x = { 'branch' },
     lualine_y = {},
     lualine_z = {
-      { lsp_icon, separator = { left = '' },                          color = { bg = colors.blue } },
+      { lsp_icon, separator = { left = '' },                          color = { bg = colors.blue } },
       { lsp, color = { bg = colors.transparent, fg = colors.white } },
     },
   },
