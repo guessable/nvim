@@ -88,7 +88,6 @@ vim.keymap.set('n', '<Leader>fs', ':Telescope lsp_document_symbols<CR>', opts)
 vim.keymap.set("n", "<Leader>o", ":NvimTreeToggle<CR>", opts)
 vim.keymap.set('n', '<C-_>', '<Plug>(comment_toggle_linewise_current)', opts) -- c-/
 vim.keymap.set('x', '<C-_>', '<Plug>(comment_toggle_linewise_visual)', opts)
-vim.keymap.set('n', '<leader>r', ':RunCode<CR>', opts)
 vim.keymap.set('n', 'j', '<Plug>(accelerated_jk_gj)', opts)
 vim.keymap.set('n', 'k', '<Plug>(accelerated_jk_gk)', opts)
 vim.keymap.set("n", "<Leader><Leader>", function()
@@ -112,9 +111,9 @@ require('kanagawa').setup({
     },
   },
   overrides = function(colors)
+    local theme = colors.theme
     return {
       ["@variable.builtin"] = { fg = colors.theme.syn.special2, italic = false },
-      NvimTreeNormal = { bg = '#1C1C1C' },
     }
   end,
 })
