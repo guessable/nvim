@@ -37,6 +37,9 @@ local config = {
       normal = { c = { fg = colors.fg, bg = colors.bg } },
       inactive = { c = { fg = colors.fg, bg = colors.bg } },
     },
+   disabled_filetypes = {
+    statusline = { 'NvimTree', 'alpha', 'toggleterm', 'vimtex-toc' },
+    },
   },
   sections = {
     lualine_a = {},

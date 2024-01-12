@@ -114,6 +114,8 @@ require('kanagawa').setup({
     local theme = colors.theme
     return {
       ["@variable.builtin"] = { fg = colors.theme.syn.special2, italic = false },
+      NvimTreeNormal = { bg = theme.ui.bg_dim },
+      NormalTerm = { bg = theme.ui.bg_dim },
     }
   end,
 })

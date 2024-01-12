@@ -76,18 +76,6 @@ local plugins = {
     end
   },
   {
-    'petertriho/nvim-scrollbar',
-     config = function()
-      require("scrollbar").setup({
-        show = true,
-        show_in_active_only = true,
-        set_highlights = true,
-        folds = 1000,
-        max_lines = false,
-      })
-    end
-  },
-  {
     'ggandor/leap.nvim',
     config = function()
       require("leap").setup({
@@ -106,7 +94,10 @@ local plugins = {
       require("toggleterm").setup({
         open_mapping = [[<c-t>]],
         direction = 'vertical',
-        size = 90
+        size = 90,
+        highlights = {
+          Normal = { link = 'NormalTerm'  }
+        },
       })
     end
   },
@@ -137,7 +128,6 @@ local plugins = {
     end
   },
 }
-
 require("lazy").setup(plugins, {
   lockfile = vim.fn.stdpath("config") .. "~/.local/share/nvim/lazy/lazy-lock.json"
 })
