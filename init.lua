@@ -18,6 +18,7 @@ vim.opt.scrolloff = 7
 vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
 vim.opt.mouse:append("a")
+vim.opt.cmdheight = 1
 local opts = { noremap = true, silent = true }
 
 -- plugins
