@@ -25,9 +25,11 @@ local plugins = {
   },
   'L3MON4D3/LuaSnip',
   'saadparwaiz1/cmp_luasnip',
+  "williamboman/mason.nvim",
+  "williamboman/mason-lspconfig.nvim",
   {
     'nvim-telescope/telescope.nvim',
-      dependencies = { 'nvim-lua/plenary.nvim' },
+    dependencies = { 'nvim-lua/plenary.nvim' },
     config = function()
       local actions = require "telescope.actions"
       require('telescope').setup {
@@ -43,7 +45,8 @@ local plugins = {
     end
   },
   {
-    'rebelot/kanagawa.nvim',
+    "catppuccin/nvim",
+    name = "catppuccin",
     priority = 1000
   },
   {
@@ -65,12 +68,12 @@ local plugins = {
     'lukas-reineke/indent-blankline.nvim',
     config = function()
       require("ibl").setup({
-        exclude = {filetypes = { "lua","julia","cpp" }},
-        indent = {char = "┊" },
+        exclude = { filetypes = { "lua", "julia", "cpp" } },
+        indent = { char = "┊" },
         scope = {
-         show_start = false,
-         show_end = false,
-         highlight = { "Function", "Label" },
+          show_start = false,
+          show_end = false,
+          highlight = { "Function", "Label" },
         }
       })
     end
@@ -92,22 +95,19 @@ local plugins = {
     'akinsho/toggleterm.nvim',
     config = function()
       require("toggleterm").setup({
-        open_mapping = [[<c-t>]],
+        open_mapping = [[<leader>tv]],
         direction = 'vertical',
-        size = 90,
-        highlights = {
-          Normal = { link = 'NormalTerm'  }
-        },
+        size = 72,
       })
     end
   },
   {
     'karb94/neoscroll.nvim',
-     config = function()
+    config = function()
       require('neoscroll').setup({
         mappings = { '<C-b>', '<C-f>' },
       })
-     end
+    end
   },
   {
     'windwp/nvim-autopairs',

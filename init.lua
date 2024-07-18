@@ -22,15 +22,15 @@ vim.opt.cmdheight = 1
 local opts = { noremap = true, silent = true }
 
 -- plugins
-require("plugins")
-require("lsp")
+require("plugin")
+require("statusline")
 
 -- autocmd
 vim.cmd [[au TextYankPost * silent! lua vim.highlight.on_yank {higroup="IncSearch", timeout=150}]]
 vim.cmd [[au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif]]
 vim.cmd [[au BufWritePost *.py silent exec "!python3 -m black %"]]
 vim.cmd [[au BufWritePost *.jl silent exec "lua vim.lsp.buf.format()"]]
-vim.cmd [[au BufWritePost *.cpp,*.hpp,*.h,*.cc silent exec "lua vim.lsp.buf.format()"]]
+vim.cmd [[au BufWritePost *.lua silent exec "lua vim.lsp.buf.format()"]]
 
 -- keymap
 vim.keymap.set("n", "<C-q>", ":q<CR>", opts)
@@ -57,8 +57,6 @@ vim.keymap.set("n", "<C-k>", "<C-w>k", opts)
 vim.keymap.set("n", "<C-j>", "<C-w>j", opts)
 vim.keymap.set("n", "<C-o>", "<C-w>o", opts)
 
-vim.keymap.set("n", "<Leader>tv", ":vsp term://zsh<CR>:vertical res -14<CR>i", opts)
-vim.keymap.set("n", "<Leader>th", ":sp term://zsh<CR>:res -7<CR>i", opts)
 vim.keymap.set("t", ":q", "<C-\\><C-n>:bdelete! %<CR>", opts)
 vim.keymap.set("t", "<ESC>", "<C-\\><C-n>", opts)
 vim.keymap.set("t", "<C-h>", "<C-\\><C-n><C-w>h", opts)
@@ -97,34 +95,20 @@ vim.keymap.set("n", "<Leader><Leader>", function()
 end)
 
 -- ui
-require('kanagawa').setup({
-  commentStyle = { italic = false },
-  keywordStyle = { italic = false },
-  typeStyle = { bold = false },
-  functionStyle = { bold = true },
-  colors = {
-    theme = {
-      all = {
-        ui = {
-          bg_gutter = "none",
-        }
-      }
-    },
+require("catppuccin").setup({
+  background = {
+    dark = "macchiato",
   },
-  overrides = function(colors)
-    local theme = colors.theme
-    return {
-      ["@variable.builtin"] = { fg = colors.theme.syn.special2, italic = false },
-      NvimTreeNormal = { bg = theme.ui.bg_dim },
-      NormalTerm = { bg = theme.ui.bg_dim },
-    }
-  end,
+  no_italic = true,
+  styles = {
+    functions = { "bold" },
+  }
 })
-require("kanagawa").load("wave")
+vim.cmd.colorscheme "catppuccin"
 
 -- treesitter
 require 'nvim-treesitter.configs'.setup {
-  ensure_installed = { "python", "cpp", "lua", "julia" },
+  ensure_installed = { "python", "lua", "julia" },
   highlight = {
     enable = true,
   },
@@ -223,5 +207,219 @@ dashboard.section.footer.val = {
 }
 alpha.setup(dashboard.config)
 
--- statusline
-require("statusline")
+-- Setup language servers.
+require("mason").setup({
+  ui = {
+    icons = {
+      package_installed = "✓",
+      package_pending = "➜",
+      package_uninstalled = "✗"
+    }
+  }
+})
+require("mason-lspconfig").setup {
+  ensure_installed = { "lua_ls", "pyright", "julials" },
+}
+
+local lspconfig = require('lspconfig')
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
+
+local servers = { "pyright", "julials", "lua_ls" }
+for _, lsp in ipairs(servers) do
+  lspconfig[lsp].setup {
+    capabilities = capabilities,
+  }
+end
+
+vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)
+vim.keymap.set('n', '<space>k', vim.diagnostic.goto_prev)
+vim.keymap.set('n', '<space>j', vim.diagnostic.goto_next)
+
+vim.api.nvim_create_autocmd('LspAttach', {
+  group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+  callback = function(ev)
+    vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+
+    local opts = { buffer = ev.buf }
+    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+
+    vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
+    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+    vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
+    vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
+    vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
+    vim.keymap.set('n', '<space>wl', function()
+      print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+    end, opts)
+    vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)
+    vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts)
+    vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+  end,
+})
+vim.diagnostic.config({
+  virtual_text = false,
+  signs = false,
+  underline = true,
+  update_in_insert = false,
+  severity_sort = false,
+})
+
+-- cmp
+local cmp = require 'cmp'
+local luasnip = require("luasnip")
+local has_words_before = function()
+  unpack = unpack or table.unpack
+  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+end
+require("luasnip.loaders.from_vscode").load({ paths = "~/.config/nvim/snippets" })
+
+local kind_icons = {
+  File = "󰈙",
+  Module = "󰏗", -- ""
+  Namespace = "󰌗",
+  Snippet = "",
+  Package = "󰆦",
+  Class = "", -- 󰌗 󰠱
+  Method = "󰆧",
+  Property = "󰜢", --  
+  Keyword = "󰌋",
+  Field = "", --󰜢" 
+  Constructor = "",
+  Enum = "󰕘", -- ""
+  Interface = "", --  󰕘
+  Function = "󰊕",
+  Variable = "", -- 󰀫 
+  Constant = "󰏿",
+  String = "󰉾",
+  Number = "󰎠",
+  Boolean = "",
+  Array = "󰅪",
+  Object = "󰅩",
+  Key = "󰌋",
+  Null = "󰟢", -- 󰢤
+  EnumMember = "",
+  Struct = "󰙅", -- "󰌗 "
+  Event = "",
+  Operator = "󰆕",
+  TypeParameter = "󰊄",
+  Text = "󰉿",
+  Unit = "󰑭",
+  Value = "󰎠",
+  Color = "󰏘",
+  Reference = "󰈇",
+  Folder = "󰉋",
+  MarkdownH1 = "󰉫",
+  MarkdownH2 = "󰉬",
+  MarkdownH3 = "󰉭",
+  MarkdownH4 = "󰉮",
+  MarkdownH5 = "󰉯",
+  MarkdownH6 = "󰉰",
+  Call = "󰃷",
+  BreakStatement = "󰙧",
+  CaseStatement = "󱃙",
+  ContinueStatement = "→",
+  Copilot = "",
+  Declaration = "󰙠",
+  Delete = "󰩺",
+  DoStatement = "󰑖",
+  ForStatement = "󰑖",
+  Identifier = "󰀫",
+  IfStatement = "󰇉",
+  List = "󰅪",
+  Log = "󰦪",
+  Lsp = "",
+  Macro = "󰁌",
+  Regex = "",
+  Repeat = "󰑖",
+  Scope = "󰅩",
+  Specifier = "󰦪",
+  Statement = "󰅩",
+  SwitchStatement = "󰺟",
+  Terminal = "",
+  Type = "",
+  WhileStatement = "󰑖",
+}
+
+cmp.setup({
+  snippet = {
+    expand = function(args)
+      require('luasnip').lsp_expand(args.body)
+    end,
+  },
+  window = {
+    completion = cmp.config.window.bordered(),
+    documentation = cmp.config.window.bordered(),
+  },
+  formatting = {
+    format = function(entry, vim_item)
+      local MAX_LABEL_WIDTH = 30
+      if #vim_item.abbr > MAX_LABEL_WIDTH then
+        vim_item.abbr = vim.fn.strcharpart(vim_item.abbr, 0, MAX_LABEL_WIDTH) .. "..."
+      end
+      vim_item.kind = string.format('%s %s', kind_icons[vim_item.kind], vim_item.kind)
+      vim_item.menu = ({
+        buffer = "[Buffer]",
+        nvim_lsp = "[LSP]",
+        luasnip = "[LuaSnip]",
+        nvim_lua = "[Lua]",
+      })[entry.source.name]
+      return vim_item
+    end
+  },
+  mapping = cmp.mapping.preset.insert({
+    ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+    ['<CR>'] = cmp.mapping({
+      i = function(fallback)
+        if cmp.visible() and cmp.get_active_entry() then
+          cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
+        else
+          fallback()
+        end
+      end
+    }),
+    ["<Tab>"] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_next_item()
+      elseif luasnip.expand_or_jumpable() then
+        luasnip.expand_or_jump()
+      elseif has_words_before() then
+        cmp.complete()
+      else
+        fallback()
+      end
+    end, { "i", "s" }),
+
+    ["<S-Tab>"] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_prev_item()
+      elseif luasnip.jumpable(-1) then
+        luasnip.jump(-1)
+      else
+        fallback()
+      end
+    end, { "i", "s" }),
+  }),
+  sources = cmp.config.sources({
+    { name = 'luasnip' },
+    { name = 'nvim_lsp' },
+    { name = 'path' },
+    { name = 'buffer' },
+  })
+})
+cmp.setup.cmdline({ '/', '?' }, {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = {
+    { name = 'buffer' }
+  }
+})
+cmp.setup.cmdline(':', {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = cmp.config.sources({
+    { name = 'path' },
+  }, {
+    { name = 'cmdline' }
+  })
+})
