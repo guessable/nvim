@@ -1,0 +1,252 @@
+{
+	"Head": {
+		"prefix": [
+			"head"
+		],
+		"body": [
+			"/************************",
+			"     \"   ",
+			"   '':''",
+			"  ___:____      |\\/|",
+			",'        `.    \\  /",
+			"|  O        \\___/  |",
+			"~^~^~^~^~^~^~^~^~^~^~^~^~",
+      "@author: τ",
+			"*************************/",
+			"$0"
+		],
+		"description": "file head"
+	},
+	"alpha": {
+		"prefix": [
+			"\\alpha"
+		],
+		"body": [
+			"α"
+		]
+	},
+	"beta": {
+		"prefix": [
+			"\\beta"
+		],
+		"body": [
+			"β"
+		]
+	},
+	"gamma": {
+		"prefix": [
+			"\\gamma"
+		],
+		"body": [
+			"γ"
+		]
+	},
+	"Gamma": {
+		"prefix": [
+			"\\Gamma"
+		],
+		"body": [
+			"Γ"
+		]
+	},
+	"delta": {
+		"prefix": [
+			"\\delta"
+		],
+		"body": [
+			"δ"
+		]
+	},
+	"Delta": {
+		"prefix": [
+			"\\Delta"
+		],
+		"body": [
+			"Δ"
+		]
+	},
+	"epsilon": {
+		"prefix": [
+			"\\epsilon"
+		],
+		"body": [
+			"ε"
+		]
+	},
+	"eta": {
+		"prefix": [
+			"\\eta"
+		],
+		"body": [
+			"η"
+		]
+	},
+	"iota": {
+		"prefix": [
+			"\\iota"
+		],
+		"body": [
+			"ι"
+		]
+	},
+	"kappa": {
+		"prefix": [
+			"\\kappa"
+		],
+		"body": [
+			"κ"
+		]
+	},
+	"chi": {
+		"prefix": [
+			"\\chi"
+		],
+		"body": [
+			"χ"
+		]
+	},
+	"lambda": {
+		"prefix": [
+			"\\lambda"
+		],
+		"body": [
+			"λ"
+		]
+	},
+	"Lambda": {
+		"prefix": [
+			"\\Lambda"
+		],
+		"body": [
+			"Λ"
+		]
+	},
+	"mu": {
+		"prefix": [
+			"\\mu"
+		],
+		"body": [
+			"μ"
+		]
+	},
+	"nu": {
+		"prefix": [
+			"\\nu"
+		],
+		"body": [
+			"ν"
+		]
+	},
+	"omega": {
+		"prefix": [
+			"\\omega"
+		],
+		"body": [
+			"ω"
+		]
+	},
+	"Omega": {
+		"prefix": [
+			"\\Omega"
+		],
+		"body": [
+			"Ω"
+		]
+	},
+	"phi": {
+		"prefix": [
+			"\\phi"
+		],
+		"body": [
+			"Φ"
+		]
+	},
+	"pi": {
+		"prefix": [
+			"\\pi"
+		],
+		"body": [
+			"π"
+		]
+	},
+	"Pi": {
+		"prefix": [
+			"\\Pi"
+		],
+		"body": [
+			"Π"
+		]
+	},
+	"psi": {
+		"prefix": [
+			"\\psi"
+		],
+		"body": [
+			"ψ"
+		]
+	},
+	"rho": {
+		"prefix": [
+			"\\rho"
+		],
+		"body": [
+			"ρ"
+		]
+	},
+	"sigma": {
+		"prefix": [
+			"\\sigma"
+		],
+		"body": [
+			"σ"
+		]
+	},
+	"Sigma": {
+		"prefix": [
+			"\\Sigma"
+		],
+		"body": [
+			"Σ"
+		]
+	},
+	"tau": {
+		"prefix": [
+			"\\tau"
+		],
+		"body": [
+			"τ"
+		]
+	},
+	"theta": {
+		"prefix": [
+			"\\theta"
+		],
+		"body": [
+			"θ"
+		]
+	},
+	"Theta": {
+		"prefix": [
+			"\\Theta"
+		],
+		"body": [
+			"Θ"
+		]
+	},
+	"xi": {
+		"prefix": [
+			"\\xi"
+		],
+		"body": [
+			"ξ"
+		]
+	},
+	"zeta": {
+		"prefix": [
+			"\\zeta"
+		],
+		"body": [
+			"ζ"
+		]
+	}
+}
