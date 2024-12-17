@@ -25,8 +25,6 @@ local plugins = {
   },
   'L3MON4D3/LuaSnip',
   'saadparwaiz1/cmp_luasnip',
-  "williamboman/mason.nvim",
-  "williamboman/mason-lspconfig.nvim",
   {
     'nvim-telescope/telescope.nvim',
     dependencies = { 'nvim-lua/plenary.nvim' },
@@ -63,34 +61,6 @@ local plugins = {
   'akinsho/bufferline.nvim',
   'nvim-lualine/lualine.nvim',
   'rainbowhxch/accelerated-jk.nvim',
-
-  {
-    'lukas-reineke/indent-blankline.nvim',
-    config = function()
-      require("ibl").setup({
-        exclude = { filetypes = { "lua", "julia", "cpp" } },
-        indent = { char = "┊" },
-        scope = {
-          show_start = false,
-          show_end = false,
-          highlight = { "Function", "Label" },
-        }
-      })
-    end
-  },
-  {
-    'ggandor/leap.nvim',
-    config = function()
-      require("leap").setup({
-        opts = {
-          highlight_unlabeled_phase_one_targets = true,
-          safe_labels = {},
-          labels = { 'a', 'r', 's', 't', 'n', 'e', 'i', 'o', 'w', 'f', 'u', 'y', 'd', 'h' },
-        }
-      })
-      vim.api.nvim_set_hl(0, 'LeapBackdrop', { link = 'Comment' })
-    end
-  },
   {
     'akinsho/toggleterm.nvim',
     config = function()
