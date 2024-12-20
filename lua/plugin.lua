@@ -26,6 +26,12 @@ local plugins = {
   'L3MON4D3/LuaSnip',
   'saadparwaiz1/cmp_luasnip',
   {
+    'nvimdev/lspsaga.nvim',
+    config = function()
+        require('lspsaga').setup({})
+    end
+  },
+  {
     'nvim-telescope/telescope.nvim',
     dependencies = { 'nvim-lua/plenary.nvim' },
     config = function()
@@ -62,12 +68,16 @@ local plugins = {
   'nvim-lualine/lualine.nvim',
   'rainbowhxch/accelerated-jk.nvim',
   {
-    'akinsho/toggleterm.nvim',
+    'lukas-reineke/indent-blankline.nvim',
     config = function()
-      require("toggleterm").setup({
-        open_mapping = [[<leader>tv]],
-        direction = 'vertical',
-        size = 72,
+      require("ibl").setup({
+        exclude = { filetypes = { "lua", "julia", "cpp" } },
+        indent = { char = "┊" },
+        scope = {
+          show_start = false,
+          show_end = false,
+          highlight = { "Function", "Label" },
+        }
       })
     end
   },
