@@ -22,7 +22,7 @@ vim.opt.cmdheight = 1
 local opts = { noremap = true, silent = true }
 
 -- plugins
-require("plugins")
+require("plugin")
 
 -- autocmd
 vim.cmd [[au TextYankPost * silent! lua vim.highlight.on_yank {higroup="IncSearch", timeout=150}]]
