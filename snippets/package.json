@@ -7,6 +7,10 @@
         "path": "./cpp.json"
       },
       {
+        "language": ["python"],
+        "path": "./python.json"
+      },
+      {
         "language": ["julia"],
         "path": "./julia.json"
       }
