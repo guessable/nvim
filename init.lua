@@ -22,13 +22,14 @@ vim.opt.cmdheight = 1
 local opts = { noremap = true, silent = true }
 
 -- plugins
-require("plugin")
+require("plugins")
 
 -- autocmd
 vim.cmd [[au TextYankPost * silent! lua vim.highlight.on_yank {higroup="IncSearch", timeout=150}]]
 vim.cmd [[au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif]]
 vim.cmd [[au BufWritePost *.cpp,*.hpp,*.h,*.cc silent exec "lua vim.lsp.buf.format()"]]
 vim.cmd [[au BufWritePost *.jl silent exec "lua vim.lsp.buf.format()"]]
+vim.cmd [[au BufWritePost *.py silent exec "!python3 -m black %"]]
 
 -- keymap
 vim.keymap.set("n", "<C-q>", ":q<CR>", opts)
@@ -205,16 +206,21 @@ alpha.setup(dashboard.config)
 local lspconfig = require('lspconfig')
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-local servers = { "clangd", "julials" }
+local servers = { "pyright", "clangd", "julials" }
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup {
     capabilities = capabilities,
   }
 end
 
-vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)
-vim.keymap.set('n', '<space>k', vim.diagnostic.goto_prev)
-vim.keymap.set('n', '<space>j', vim.diagnostic.goto_next)
+vim.keymap.set('n', '<Leader>tt', '<cmd>Lspsaga term_toggle<CR>')
+vim.keymap.set('t', '<Leader>tt', '<cmd>Lspsaga term_toggle<CR>')
+vim.keymap.set('n', '<Leader>e', '<cmd>Lspsaga show_cursor_diagnostics<CR>',opts)
+vim.keymap.set('n', '<Leader>k', '<cmd>Lspsaga diagnostic_jump_prev<CR>',opts)
+vim.keymap.set('n', '<Leader>j', '<cmd>Lspsaga diagnostic_jump_next<CR>',opts)
+vim.keymap.set('n', 'K', '<cmd>Lspsaga hover_doc<CR>',opts)
+vim.keymap.set('n', 'gd', '<cmd>Lspsaga peek_definition<CR>',opts)
+vim.keymap.set('n', 'gD', '<cmd>Lspsaga goto_definition<CR>',opts)
 
 vim.api.nvim_create_autocmd('LspAttach', {
   group = vim.api.nvim_create_augroup('UserLspConfig', {}),
@@ -222,19 +228,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
     vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
     local opts = { buffer = ev.buf }
-    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
-    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
-
-    vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
     vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
-    vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts)
-    vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
-    vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
-    vim.keymap.set('n', '<space>wl', function()
-      print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-    end, opts)
-    vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)
-    vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts)
     vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
   end,
 })
