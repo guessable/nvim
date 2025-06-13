@@ -23,6 +23,7 @@ local plugins = {
       'hrsh7th/cmp-cmdline',
     }
   },
+  "mason-org/mason.nvim",
   'L3MON4D3/LuaSnip',
   'saadparwaiz1/cmp_luasnip',
   {
@@ -67,11 +68,12 @@ local plugins = {
   'akinsho/bufferline.nvim',
   'nvim-lualine/lualine.nvim',
   'rainbowhxch/accelerated-jk.nvim',
+  {'akinsho/toggleterm.nvim', version = "*", config = true},
   {
     'lukas-reineke/indent-blankline.nvim',
     config = function()
       require("ibl").setup({
-        exclude = { filetypes = { "lua", "julia", "cpp" } },
+        exclude = { filetypes = { "lua", "cpp" } },
         indent = { char = "┊" },
         scope = {
           show_start = false,
