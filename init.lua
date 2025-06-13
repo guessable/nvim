@@ -19,6 +19,7 @@ vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
 vim.opt.mouse:append("a")
 vim.opt.cmdheight = 1
+
 local opts = { noremap = true, silent = true }
 
 -- plugins
@@ -28,7 +29,6 @@ require("plugin")
 vim.cmd [[au TextYankPost * silent! lua vim.highlight.on_yank {higroup="IncSearch", timeout=150}]]
 vim.cmd [[au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif]]
 vim.cmd [[au BufWritePost *.cpp,*.hpp,*.h,*.cc silent exec "lua vim.lsp.buf.format()"]]
-vim.cmd [[au BufWritePost *.jl silent exec "lua vim.lsp.buf.format()"]]
 vim.cmd [[au BufWritePost *.py silent exec "!python3 -m black %"]]
 
 -- keymap
@@ -89,6 +89,9 @@ vim.keymap.set('x', '<C-_>', '<Plug>(comment_toggle_linewise_visual)', opts)
 vim.keymap.set('n', 'j', '<Plug>(accelerated_jk_gj)', opts)
 vim.keymap.set('n', 'k', '<Plug>(accelerated_jk_gk)', opts)
 
+vim.keymap.set("n", "<Leader>tf", ":Lspsaga term_toggle<CR>", opts)
+vim.keymap.set("t", "<Leader>tf", "<C-\\><C-n>:Lspsaga term_toggle<CR>", opts)
+
 -- ui
 require("catppuccin").setup({
   background = {
@@ -103,7 +106,7 @@ vim.cmd.colorscheme "catppuccin"
 
 -- treesitter
 require 'nvim-treesitter.configs'.setup {
-  ensure_installed = { "python", "lua", "cpp", "julia" },
+  ensure_installed = { "lua", "cpp", "python" },
   highlight = {
     enable = true,
   },
@@ -118,7 +121,8 @@ vim.g.loaded_netrwPlugin = 1
 local function on_attach(bufnr)
   local api = require('nvim-tree.api')
   local function opts(desc)
-    return { desc = 'nvim-tree: ' .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
+    return { desc = 'nvim-tree: ' .. desc, buffer = bufnr,
+      noremap = true, silent = true, nowait = true }
   end
   vim.keymap.set('n', 'l', api.tree.change_root_to_node, opts('CD'))
   vim.keymap.set('n', 'h', api.tree.change_root_to_parent, opts('Up'))
@@ -143,6 +147,13 @@ require("nvim-tree").setup({
     dotfiles = true,
   },
 })
+
+-- term
+require("toggleterm").setup{
+  size=80,
+  open_mapping = [[<Leader>tv]],
+  direction = 'vertical'
+}
 
 -- bufferline
 local bufferline = require('bufferline')
@@ -203,18 +214,25 @@ dashboard.section.footer.val = {
 alpha.setup(dashboard.config)
 
 -- lsp
+require("mason").setup({
+    ui = {
+        icons = {
+            package_installed = "✓",
+            package_pending = "➜",
+            package_uninstalled = "✗"
+        }
+    }
+})
 local lspconfig = require('lspconfig')
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-local servers = { "pyright", "clangd", "julials" }
+local servers = { "clangd", "pyright" }
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup {
     capabilities = capabilities,
   }
 end
 
-vim.keymap.set('n', '<Leader>tt', '<cmd>Lspsaga term_toggle<CR>')
-vim.keymap.set('t', '<Leader>tt', '<cmd>Lspsaga term_toggle<CR>')
 vim.keymap.set('n', '<Leader>e', '<cmd>Lspsaga show_cursor_diagnostics<CR>',opts)
 vim.keymap.set('n', '<Leader>k', '<cmd>Lspsaga diagnostic_jump_prev<CR>',opts)
 vim.keymap.set('n', '<Leader>j', '<cmd>Lspsaga diagnostic_jump_next<CR>',opts)
@@ -399,110 +417,5 @@ cmp.setup.cmdline(':', {
   })
 })
 
--- statusline
-local colors = {
-  blue        = '#61afef',
-  cyan        = '#56b6c2',
-  black       = '#080808',
-  white       = '#c6c6c6',
-  red         = '#e86671',
-  violet      = '#c678dd',
-  grey        = '#303030',
-  yellow      = '#FFD700',
-  orange      = '#d19a66',
-  green       = '#98c379',
-  transparent = '#FFFFFF00'
-}
-
-local theme = {
-  normal = {
-    a = { fg = colors.black, bg = colors.red },
-    b = { fg = colors.white, bg = colors.grey },
-    c = { fg = colors.transparent, bg = colors.transparent },
-  },
-
-  insert = { a = { fg = colors.black, bg = colors.red } },
-  visual = { a = { fg = colors.black, bg = colors.red } },
-  replace = { a = { fg = colors.black, bg = colors.red } },
-
-  inactive = {
-    a = { fg = colors.white, bg = colors.black },
-    b = { fg = colors.white, bg = colors.black },
-    c = { fg = colors.transparent, bg = colors.transparent },
-  },
-}
-
-local function Logo()
-  return ' CT'
-end
-
-local function clock()
-  return ' '
-end
-
-local function location_icon()
-  return ' '
-end
-
-local function infinity()
-  return ' '
-end
-
-local function time()
-  return os.date("%R")
-end
-
-local function dir()
-  return " " .. vim.fn.expand('%:p:h:t')
-end
-
-local function lsp()
-  local msg = 'No Active Lsp'
-  local buf_ft = vim.api.nvim_buf_get_option(0, 'filetype')
-  local clients = vim.lsp.get_active_clients()
-  if next(clients) == nil then
-    return msg
-  end
-  for _, client in ipairs(clients) do
-    local filetypes = client.config.filetypes
-    if filetypes and vim.fn.index(filetypes, buf_ft) ~= -1 then
-      return client.name
-    end
-  end
-  return msg
-end
-
-require('lualine').setup {
-  options = {
-    theme = theme,
-    component_separators = '',
-    section_separators = { left = ' ' },
-    disabled_filetypes = {
-      statusline = { 'NvimTree', 'alpha', 'vimtex-toc', 'VimTex', 'toggleterm' },
-    },
-  },
-  sections = {
-    lualine_a = {
-      { Logo, separator = { right = ' ' }, colors = { fg = '#080808' } },
-    },
-    lualine_b = { dir },
-    lualine_c = { { 'diagnostics', symbols = { error = ' ', warn = ' ', info = ' ', hint = ' ' } } },
-    lualine_x = { 'branch', lsp },
-    lualine_y = { { location_icon, color = { bg = colors.green, fg = colors.black }, separator = { left = '' } },
-      { 'location', color = { bg = colors.transparent, fg = colors.white } } },
-    lualine_z = {
-      { clock, separator = { left = '' }, color = { bg = colors.blue } },
-      { "progress", color = { bg = colors.transparent, fg = colors.white } },
-    },
-  },
-  inactive_sections = {
-    lualine_a = { { infinity, color = { bg = "#008B8B", fg = colors.black }, separator = { right = '' } } },
-    lualine_b = {},
-    lualine_c = {},
-    lualine_x = {},
-    lualine_y = {},
-    lualine_z = { { 'filename', color = { bg = "#008B8B", fg = colors.black }, separator = { left = '' } } },
-  },
-  tabline = {},
-  extensions = {},
-}
+-- ststusline
+require("evil")
