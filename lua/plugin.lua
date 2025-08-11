@@ -55,6 +55,18 @@ local plugins = {
     priority = 1000
   },
   {
+    "folke/tokyonight.nvim",
+    lazy = false,
+    priority = 1000,
+    opts = {
+      style = "moon", -- moon storm day night
+      styles = {
+        comments = { italic = false },
+        keywords = { italic = false },
+      }
+    }
+  },
+  {
     'nvim-tree/nvim-tree.lua',
     dependencies = { 'nvim-tree/nvim-web-devicons' }
   },
