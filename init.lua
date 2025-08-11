@@ -20,6 +20,13 @@ vim.opt.shiftwidth = 2
 vim.opt.mouse:append("a")
 vim.opt.cmdheight = 1
 
+vim.opt.shell = "powershell.exe"
+vim.opt.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;"
+vim.opt.shellredir = "-RedirectStandardOutput %s -NoNewWindow -Wait"
+vim.opt.shellpipe = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode"
+vim.opt.shellquote = ""
+vim.opt.shellxquote = ""
+
 local opts = { noremap = true, silent = true }
 
 -- plugins
@@ -28,8 +35,8 @@ require("plugin")
 -- autocmd
 vim.cmd [[au TextYankPost * silent! lua vim.highlight.on_yank {higroup="IncSearch", timeout=150}]]
 vim.cmd [[au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif]]
-vim.cmd [[au BufWritePost *.cpp,*.hpp,*.h,*.cc silent exec "lua vim.lsp.buf.format()"]]
-vim.cmd [[au BufWritePost *.py silent exec "!python3 -m black %"]]
+vim.cmd [[au BufWritePost *.jl silent exec "lua vim.lsp.buf.format()"]]
+vim.cmd [[au BufWritePost *.py silent exec "!python -m black %"]]
 
 -- keymap
 vim.keymap.set("n", "<C-q>", ":q<CR>", opts)
@@ -89,24 +96,22 @@ vim.keymap.set('x', '<C-_>', '<Plug>(comment_toggle_linewise_visual)', opts)
 vim.keymap.set('n', 'j', '<Plug>(accelerated_jk_gj)', opts)
 vim.keymap.set('n', 'k', '<Plug>(accelerated_jk_gk)', opts)
 
-vim.keymap.set("n", "<Leader>tf", ":Lspsaga term_toggle<CR>", opts)
-vim.keymap.set("t", "<Leader>tf", "<C-\\><C-n>:Lspsaga term_toggle<CR>", opts)
-
 -- ui
-require("catppuccin").setup({
-  background = {
-    dark = "macchiato",
-  },
-  no_italic = true,
-  styles = {
-    functions = { "bold" },
-  }
-})
-vim.cmd.colorscheme "catppuccin"
+-- require("catppuccin").setup({
+--   background = {
+--     dark = "macchiato",
+--   },
+--   no_italic = true,
+--   styles = {
+--     functions = { "bold" },
+--   }
+-- })
+-- vim.cmd.colorscheme "catppuccin"
+vim.cmd[[colorscheme tokyonight]]
 
 -- treesitter
 require 'nvim-treesitter.configs'.setup {
-  ensure_installed = { "lua", "cpp", "python" },
+  ensure_installed = { "lua", "python", "julia" },
   highlight = {
     enable = true,
   },
@@ -226,7 +231,7 @@ require("mason").setup({
 local lspconfig = require('lspconfig')
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-local servers = { "clangd", "pyright" }
+local servers = { "pyright", "julials" }
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup {
     capabilities = capabilities,
@@ -266,24 +271,24 @@ local has_words_before = function()
   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
   return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 end
-require("luasnip.loaders.from_vscode").load({ paths = "~/.config/nvim/snippets" })
+require("luasnip.loaders.from_vscode").load({ paths = "~/AppData/Local/nvim/snippets" })
 
 local kind_icons = {
   File = "󰈙",
-  Module = "󰏗", -- ""
+  Module = "󰏗",
   Namespace = "󰌗",
   Snippet = "",
   Package = "󰆦",
-  Class = "", -- 󰌗 󰠱
+  Class = "",
   Method = "󰆧",
-  Property = "󰜢", --  
+  Property = "󰜢",
   Keyword = "󰌋",
-  Field = "", --󰜢" 
+  Field = "",
   Constructor = "",
-  Enum = "󰕘", -- ""
-  Interface = "", --  󰕘
+  Enum = "󰕘",
+  Interface = "",
   Function = "󰊕",
-  Variable = "", -- 󰀫 
+  Variable = "",
   Constant = "󰏿",
   String = "󰉾",
   Number = "󰎠",
@@ -291,9 +296,9 @@ local kind_icons = {
   Array = "󰅪",
   Object = "󰅩",
   Key = "󰌋",
-  Null = "󰟢", -- 󰢤
+  Null = "󰟢", 
   EnumMember = "",
-  Struct = "󰙅", -- "󰌗 "
+  Struct = "󰙅",
   Event = "",
   Operator = "󰆕",
   TypeParameter = "󰊄",
