@@ -36,7 +36,7 @@ require("plugin")
 vim.cmd [[au TextYankPost * silent! lua vim.highlight.on_yank {higroup="IncSearch", timeout=150}]]
 vim.cmd [[au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif]]
 vim.cmd [[au BufWritePost *.jl silent exec "lua vim.lsp.buf.format()"]]
-vim.cmd [[au BufWritePost *.py silent exec "!python -m black %"]]
+vim.cmd [[au BufWritePost *.py silent exec "!python -m black % --line-length 100"]]
 
 -- keymap
 vim.keymap.set("n", "<C-q>", ":q<CR>", opts)
