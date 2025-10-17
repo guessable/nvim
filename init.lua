@@ -19,14 +19,6 @@ vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
 vim.opt.mouse:append("a")
 vim.opt.cmdheight = 1
-
-vim.opt.shell = "powershell.exe"
-vim.opt.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;"
-vim.opt.shellredir = "-RedirectStandardOutput %s -NoNewWindow -Wait"
-vim.opt.shellpipe = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode"
-vim.opt.shellquote = ""
-vim.opt.shellxquote = ""
-
 local opts = { noremap = true, silent = true }
 
 -- plugins
@@ -228,15 +220,8 @@ require("mason").setup({
         }
     }
 })
-local lspconfig = require('lspconfig')
-local capabilities = require('cmp_nvim_lsp').default_capabilities()
-
-local servers = { "pyright", "julials" }
-for _, lsp in ipairs(servers) do
-  lspconfig[lsp].setup {
-    capabilities = capabilities,
-  }
-end
+vim.lsp.enable('pyright')
+vim.lsp.enable('julials')
 
 vim.keymap.set('n', '<Leader>e', '<cmd>Lspsaga show_cursor_diagnostics<CR>',opts)
 vim.keymap.set('n', '<Leader>k', '<cmd>Lspsaga diagnostic_jump_prev<CR>',opts)
