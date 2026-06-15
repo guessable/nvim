@@ -19,16 +19,85 @@ vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
 vim.opt.mouse:append("a")
 vim.opt.cmdheight = 1
+vim.opt.winborder = "rounded"
 local opts = { noremap = true, silent = true }
 
--- plugins
-require("plugin")
+-- plugin
+vim.pack.add({
+  { src = 'https://github.com/neovim/nvim-lspconfig' },
+  { src = "https://github.com/saghen/blink.cmp", version = "v1", name = "blink.cmp" },
+  { src = 'https://github.com/archie-judd/blink-cmp-words' },
+  { src = 'https://github.com/nvimdev/lspsaga.nvim' },
+  { src = "https://github.com/mason-org/mason.nvim", name = "mason" },
+
+  { src = 'https://github.com/nvim-telescope/telescope.nvim' },
+  { src = 'https://github.com/nvim-lua/plenary.nvim' },
+
+  { src = "https://github.com/catppuccin/nvim" },
+  { src = "https://github.com/akinsho/bufferline.nvim" },
+  { src = "https://github.com/nvim-lualine/lualine.nvim" },
+  { src = "https://github.com/goolord/alpha-nvim" },
+
+  { src = 'https://github.com/nvim-tree/nvim-tree.lua' },
+  { src = 'https://github.com/nvim-tree/nvim-web-devicons' },
+
+  { src = 'https://github.com/folke/noice.nvim' },
+  { src = 'https://github.com/MunifTanjim/nui.nvim' },
+  { src = 'https://github.com/rcarriga/nvim-notify' },
+
+  { src = "https://github.com/akinsho/toggleterm.nvim" },
+  { src = "https://github.com/rainbowhxch/accelerated-jk.nvim" },
+  { src = "https://github.com/karb94/neoscroll.nvim" },
+  { src = "https://github.com/windwp/nvim-autopairs" },
+  { src = "https://github.com/numToStr/Comment.nvim" },
+})
 
 -- autocmd
 vim.cmd [[au TextYankPost * silent! lua vim.highlight.on_yank {higroup="IncSearch", timeout=150}]]
 vim.cmd [[au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif]]
-vim.cmd [[au BufWritePost *.jl silent exec "lua vim.lsp.buf.format()"]]
+vim.cmd [[au BufWritePost *.cpp silent exec "lua vim.lsp.buf.format()"]]
 vim.cmd [[au BufWritePost *.py silent exec "!python -m black % --line-length 100"]]
+local function insert_banner_py()
+  local lines = {
+    "# ---------------------",
+    '#      "   ',
+    "#    '':''",
+    "#   ___:____      |\\/|",
+    "# ,'        `.    \\  /",
+    "# |  O        \\___/  |",
+    "# ~^~^~^~^~^~^~^~^~^~^",
+    "# ---------------------",
+    "# @author: τ",
+    "",
+  }
+  vim.api.nvim_buf_set_lines(0, 0, 0, false, lines)
+end
+
+local function insert_banner_cpp()
+  local lines = {
+    "/************************",
+    '     "   ',
+    "   '':''",
+    "  ___:____      |\\/|",
+    ",'        `.    \\  /",
+    "|  O        \\___/  |",
+    "~^~^~^~^~^~^~^~^~^~^",
+    "@author: τ",
+    "*************************/", 
+    "",
+  }
+  vim.api.nvim_buf_set_lines(0, 0, 0, false, lines)
+end
+
+vim.api.nvim_create_autocmd("BufNewFile", {
+  pattern = {"*.py", "*.jl"},
+  callback = insert_banner_py,
+})
+
+vim.api.nvim_create_autocmd("BufNewFile", {
+  pattern = "*.cpp",
+  callback = insert_banner_cpp,
+})
 
 -- keymap
 vim.keymap.set("n", "<C-q>", ":q<CR>", opts)
@@ -88,29 +157,69 @@ vim.keymap.set('x', '<C-_>', '<Plug>(comment_toggle_linewise_visual)', opts)
 vim.keymap.set('n', 'j', '<Plug>(accelerated_jk_gj)', opts)
 vim.keymap.set('n', 'k', '<Plug>(accelerated_jk_gk)', opts)
 
--- ui
--- require("catppuccin").setup({
---   background = {
---     dark = "macchiato",
---   },
---   no_italic = true,
---   styles = {
---     functions = { "bold" },
---   }
--- })
--- vim.cmd.colorscheme "catppuccin"
-vim.cmd[[colorscheme tokyonight]]
-
--- treesitter
-require 'nvim-treesitter.configs'.setup {
-  ensure_installed = { "lua", "python", "julia" },
-  highlight = {
-    enable = true,
+-- telescope
+local actions = require "telescope.actions"
+require('telescope').setup {
+  defaults = {
+    prompt_prefix = ' ',
+    mappings = {
+      i = {
+        ['<Leader>v'] = actions.select_vertical
+      },
+    }
   },
-  indent = { enable = true },
-  context_commentstring = { enable = true, enable_autocmd = false },
-  matchup = { enable = true },
 }
+
+-- theme
+require("catppuccin").setup({
+  background = {
+    dark = "macchiato",
+  },
+  no_italic = true,
+  -- styles = {
+  --   functions = { "bold" },
+  -- }
+})
+vim.cmd.colorscheme "catppuccin"
+
+-- bufferline
+local bufferline = require('bufferline')
+bufferline.setup {
+  options = {
+    numbers = "ordinal",
+    tab_size = 10,
+    buffer_close_icon = '',
+    separator_style = "thick",
+    style_preset = {
+      bufferline.style_preset.no_italic,
+      bufferline.style_preset.no_bold
+    },
+    offsets = { {
+      filetype = "NvimTree",
+      text = "File Explorer",
+      highlight = "Directory",
+      text_align = "center"
+    }
+    }
+  }
+}
+
+-- term
+require("toggleterm").setup{
+  size=80,
+  open_mapping = [[<Leader>tv]],
+  direction = 'vertical', -- vertical, float
+  float_opts = {
+    border = 'double',
+  }
+}
+
+-- utils
+require('Comment').setup()
+require('nvim-autopairs').setup()
+require('neoscroll').setup({
+  mappings = { '<C-b>', '<C-f>' },
+})
 
 -- nvim-tree
 vim.g.loaded_netrw = 1
@@ -144,35 +253,6 @@ require("nvim-tree").setup({
     dotfiles = true,
   },
 })
-
--- term
-require("toggleterm").setup{
-  size=80,
-  open_mapping = [[<Leader>tv]],
-  direction = 'vertical'
-}
-
--- bufferline
-local bufferline = require('bufferline')
-bufferline.setup {
-  options = {
-    numbers = "ordinal",
-    tab_size = 10,
-    buffer_close_icon = '',
-    separator_style = "thick",
-    style_preset = {
-      bufferline.style_preset.no_italic,
-      bufferline.style_preset.no_bold
-    },
-    offsets = { {
-      filetype = "NvimTree",
-      text = "File Explorer",
-      highlight = "Directory",
-      text_align = "center"
-    }
-    }
-  }
-}
 
 -- dashboard
 local alpha = require 'alpha'
@@ -210,18 +290,20 @@ dashboard.section.footer.val = {
 }
 alpha.setup(dashboard.config)
 
--- lsp
+-- LSP
+vim.lsp.enable({ "ty" }) -- python
+vim.lsp.enable({ "clangd" }) -- cpp
+
+require('lspsaga').setup({})
 require("mason").setup({
-    ui = {
-        icons = {
-            package_installed = "✓",
-            package_pending = "➜",
-            package_uninstalled = "✗"
-        }
-    }
+	ui = {
+		icons = {
+			package_installed = "✓",
+			package_pending = "➜",
+			package_uninstalled = "✗",
+		},
+	},
 })
-vim.lsp.enable('pyright')
-vim.lsp.enable('julials')
 
 vim.keymap.set('n', '<Leader>e', '<cmd>Lspsaga show_cursor_diagnostics<CR>',opts)
 vim.keymap.set('n', '<Leader>k', '<cmd>Lspsaga diagnostic_jump_prev<CR>',opts)
@@ -248,163 +330,101 @@ vim.diagnostic.config({
   severity_sort = false,
 })
 
--- cmp
-local cmp = require 'cmp'
-local luasnip = require("luasnip")
-local has_words_before = function()
-  unpack = unpack or table.unpack
-  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-end
-require("luasnip.loaders.from_vscode").load({ paths = "~/AppData/Local/nvim/snippets" })
-
-local kind_icons = {
-  File = "󰈙",
-  Module = "󰏗",
-  Namespace = "󰌗",
-  Snippet = "",
-  Package = "󰆦",
-  Class = "",
-  Method = "󰆧",
-  Property = "󰜢",
-  Keyword = "󰌋",
-  Field = "",
-  Constructor = "",
-  Enum = "󰕘",
-  Interface = "",
-  Function = "󰊕",
-  Variable = "",
-  Constant = "󰏿",
-  String = "󰉾",
-  Number = "󰎠",
-  Boolean = "",
-  Array = "󰅪",
-  Object = "󰅩",
-  Key = "󰌋",
-  Null = "󰟢", 
-  EnumMember = "",
-  Struct = "󰙅",
-  Event = "",
-  Operator = "󰆕",
-  TypeParameter = "󰊄",
-  Text = "󰉿",
-  Unit = "󰑭",
-  Value = "󰎠",
-  Color = "󰏘",
-  Reference = "󰈇",
-  Folder = "󰉋",
-  MarkdownH1 = "󰉫",
-  MarkdownH2 = "󰉬",
-  MarkdownH3 = "󰉭",
-  MarkdownH4 = "󰉮",
-  MarkdownH5 = "󰉯",
-  MarkdownH6 = "󰉰",
-  Call = "󰃷",
-  BreakStatement = "󰙧",
-  CaseStatement = "󱃙",
-  ContinueStatement = "→",
-  Copilot = "",
-  Declaration = "󰙠",
-  Delete = "󰩺",
-  DoStatement = "󰑖",
-  ForStatement = "󰑖",
-  Identifier = "󰀫",
-  IfStatement = "󰇉",
-  List = "󰅪",
-  Log = "󰦪",
-  Lsp = "",
-  Macro = "󰁌",
-  Regex = "",
-  Repeat = "󰑖",
-  Scope = "󰅩",
-  Specifier = "󰦪",
-  Statement = "󰅩",
-  SwitchStatement = "󰺟",
-  Terminal = "",
-  Type = "",
-  WhileStatement = "󰑖",
-}
-
-cmp.setup({
-  snippet = {
-    expand = function(args)
-      require('luasnip').lsp_expand(args.body)
-    end,
+-- blink
+require("blink.cmp").setup({
+  completion = {
+    documentation = {
+      auto_show = true,
+      window = {
+        border = "single",
+        scrollbar = false,
+      },
+    },
+    menu = {
+      border = "single",
+      auto_show = true,
+      auto_show_delay_ms = 0,
+      scrollbar = false,
+    },
   },
-  window = {
-    completion = cmp.config.window.bordered(),
-    documentation = cmp.config.window.bordered(),
-  },
-  formatting = {
-    format = function(entry, vim_item)
-      local MAX_LABEL_WIDTH = 30
-      if #vim_item.abbr > MAX_LABEL_WIDTH then
-        vim_item.abbr = vim.fn.strcharpart(vim_item.abbr, 0, MAX_LABEL_WIDTH) .. "..."
-      end
-      vim_item.kind = string.format('%s %s', kind_icons[vim_item.kind], vim_item.kind)
-      vim_item.menu = ({
-        buffer = "[Buffer]",
-        nvim_lsp = "[LSP]",
-        luasnip = "[LuaSnip]",
-        nvim_lua = "[Lua]",
-      })[entry.source.name]
-      return vim_item
-    end
-  },
-  mapping = cmp.mapping.preset.insert({
-    ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<CR>'] = cmp.mapping({
-      i = function(fallback)
-        if cmp.visible() and cmp.get_active_entry() then
-          cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
-        else
-          fallback()
-        end
-      end
-    }),
-    ["<Tab>"] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_next_item()
-      elseif luasnip.expand_or_jumpable() then
-        luasnip.expand_or_jump()
-      elseif has_words_before() then
-        cmp.complete()
-      else
-        fallback()
-      end
-    end, { "i", "s" }),
+  keymap = {
+    preset = 'none',
+    ['<C-space>'] = { 'show', 'show_documentation', 'hide_documentation' },
+    ['<C-e>'] = { 'hide', 'fallback' },
+    ['<Tab>'] = { 'select_and_accept', 'fallback' },
 
-    ["<S-Tab>"] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_prev_item()
-      elseif luasnip.jumpable(-1) then
-        luasnip.jump(-1)
-      else
-        fallback()
-      end
-    end, { "i", "s" }),
-  }),
-  sources = cmp.config.sources({
-    { name = 'luasnip' },
-    { name = 'nvim_lsp' },
-    { name = 'path' },
-    { name = 'buffer' },
-  })
-})
-cmp.setup.cmdline({ '/', '?' }, {
-  mapping = cmp.mapping.preset.cmdline(),
+    ['<Up>'] = { 'select_prev', 'fallback' },
+    ['<Down>'] = { 'select_next', 'fallback' },
+    ['<C-p>'] = { 'select_prev', 'fallback_to_mappings' },
+    ['<C-n>'] = { 'select_next', 'fallback_to_mappings' },
+
+    ['<C-b>'] = { 'scroll_documentation_up', 'fallback' },
+    ['<C-f>'] = { 'scroll_documentation_down', 'fallback' },
+
+    -- ['<Tab>'] = { 'snippet_forward', 'fallback' },
+    ['<S-Tab>'] = { 'snippet_backward', 'fallback' },
+
+    ['<C-k>'] = { 'show_signature', 'hide_signature', 'fallback' },
+  },
+  signature = {
+    enabled = true,
+  },
+  fuzzy = { implementation = "lua" },
+  cmdline = {
+    completion = {
+      menu = {
+        auto_show = true,
+        -- border = "none",
+      },
+    },
+  },
   sources = {
-    { name = 'buffer' }
-  }
+    providers = {
+      snippets = {
+        score_offset = 1000,
+        should_show_items = function(ctx)
+          return ctx.trigger.initial_kind ~= "trigger_character"
+        end,
+      },
+      thesaurus = {
+        name = "blink-cmp-words",
+        module = "blink-cmp-words.thesaurus",
+        opts = {
+          score_offset = 0,
+          definition_pointers = { "!", "&", "^" },
+          similarity_pointers = { "&", "^" },
+          similarity_depth = 2,
+        },
+      },
+      dictionary = {
+        name = "blink-cmp-words",
+        module = "blink-cmp-words.dictionary",
+        opts = {
+          dictionary_search_threshold = 3,
+          score_offset = 0,
+          definition_pointers = { "!", "&", "^" },
+        },
+      },
+    },
+  },
 })
-cmp.setup.cmdline(':', {
-  mapping = cmp.mapping.preset.cmdline(),
-  sources = cmp.config.sources({
-    { name = 'path' },
-  }, {
-    { name = 'cmdline' }
-  })
+
+-- noice
+require("noice").setup({
+  lsp = {
+    override = {
+      ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+      ["vim.lsp.util.stylize_markdown"] = true,
+      ["cmp.entry.get_documentation"] = true,
+    },
+  },
+  presets = {
+    bottom_search = true,
+    command_palette = true,
+    long_message_to_split = true,
+    inc_rename = false,
+    lsp_doc_border = false,
+  },
 })
 
 -- ststusline
