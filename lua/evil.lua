@@ -68,8 +68,8 @@ ins_left {
   function()
     return '▊'
   end,
-  color = { fg = colors.blue }, 
-  padding = { left = 0, right = 1 }, 
+  color = { fg = colors.blue },
+  padding = { left = 0, right = 1 },
 }
 
 ins_left {
@@ -157,8 +157,8 @@ ins_right {
 }
 
 ins_right {
-  'o:encoding', 
-  fmt = string.upper, 
+  'o:encoding',
+  fmt = string.upper,
   cond = conditions.hide_in_width,
   color = { fg = colors.green, gui = 'bold' },
 }
@@ -166,7 +166,7 @@ ins_right {
 ins_right {
   'fileformat',
   fmt = string.upper,
-  icons_enabled = false, 
+  icons_enabled = false,
   color = { fg = colors.green, gui = 'bold' },
 }
 
