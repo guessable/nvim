@@ -25,10 +25,10 @@ local opts = { noremap = true, silent = true }
 -- plugin
 vim.pack.add({
   { src = 'https://github.com/neovim/nvim-lspconfig' },
-  { src = "https://github.com/saghen/blink.cmp", version = "v1", name = "blink.cmp" },
+  { src = "https://github.com/saghen/blink.cmp",               version = "v1", name = "blink.cmp" },
   { src = 'https://github.com/archie-judd/blink-cmp-words' },
   { src = 'https://github.com/nvimdev/lspsaga.nvim' },
-  { src = "https://github.com/mason-org/mason.nvim", name = "mason" },
+  { src = "https://github.com/mason-org/mason.nvim",           name = "mason" },
 
   { src = 'https://github.com/nvim-telescope/telescope.nvim' },
   { src = 'https://github.com/nvim-lua/plenary.nvim' },
@@ -45,18 +45,19 @@ vim.pack.add({
   { src = 'https://github.com/MunifTanjim/nui.nvim' },
   { src = 'https://github.com/rcarriga/nvim-notify' },
 
-  { src = "https://github.com/akinsho/toggleterm.nvim" },
   { src = "https://github.com/rainbowhxch/accelerated-jk.nvim" },
   { src = "https://github.com/karb94/neoscroll.nvim" },
   { src = "https://github.com/windwp/nvim-autopairs" },
   { src = "https://github.com/numToStr/Comment.nvim" },
 })
+vim.keymap.set("n", "U", ":lua vim.pack.update()<CR>", opts)
 
 -- autocmd
 vim.cmd [[au TextYankPost * silent! lua vim.highlight.on_yank {higroup="IncSearch", timeout=150}]]
 vim.cmd [[au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif]]
 vim.cmd [[au BufWritePost *.cpp silent exec "lua vim.lsp.buf.format()"]]
-vim.cmd [[au BufWritePost *.py silent exec "!python -m black % --line-length 100"]]
+vim.cmd [[au BufWritePost *.lua silent exec "lua vim.lsp.buf.format()"]]
+vim.cmd [[au BufWritePost *.py silent exec "!python -m black % --line-length 140"]]
 local function insert_banner_py()
   local lines = {
     "# ---------------------",
@@ -83,14 +84,14 @@ local function insert_banner_cpp()
     "|  O        \\___/  |",
     "~^~^~^~^~^~^~^~^~^~^",
     "@author: τ",
-    "*************************/", 
+    "*************************/",
     "",
   }
   vim.api.nvim_buf_set_lines(0, 0, 0, false, lines)
 end
 
 vim.api.nvim_create_autocmd("BufNewFile", {
-  pattern = {"*.py", "*.jl"},
+  pattern = { "*.py", "*.jl" },
   callback = insert_banner_py,
 })
 
@@ -157,6 +158,18 @@ vim.keymap.set('x', '<C-_>', '<Plug>(comment_toggle_linewise_visual)', opts)
 vim.keymap.set('n', 'j', '<Plug>(accelerated_jk_gj)', opts)
 vim.keymap.set('n', 'k', '<Plug>(accelerated_jk_gk)', opts)
 
+-- theme
+require("catppuccin").setup({
+  background = {
+    dark = "macchiato",
+  },
+  no_italic = true,
+  -- styles = {
+  --   functions = { "bold" },
+  -- }
+})
+vim.cmd.colorscheme "catppuccin"
+
 -- telescope
 local actions = require "telescope.actions"
 require('telescope').setup {
@@ -169,18 +182,6 @@ require('telescope').setup {
     }
   },
 }
-
--- theme
-require("catppuccin").setup({
-  background = {
-    dark = "macchiato",
-  },
-  no_italic = true,
-  -- styles = {
-  --   functions = { "bold" },
-  -- }
-})
-vim.cmd.colorscheme "catppuccin"
 
 -- bufferline
 local bufferline = require('bufferline')
@@ -204,31 +205,19 @@ bufferline.setup {
   }
 }
 
--- term
-require("toggleterm").setup{
-  size=80,
-  open_mapping = [[<Leader>tv]],
-  direction = 'vertical', -- vertical, float
-  float_opts = {
-    border = 'double',
-  }
-}
-
--- utils
-require('Comment').setup()
-require('nvim-autopairs').setup()
-require('neoscroll').setup({
-  mappings = { '<C-b>', '<C-f>' },
-})
-
 -- nvim-tree
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 local function on_attach(bufnr)
   local api = require('nvim-tree.api')
   local function opts(desc)
-    return { desc = 'nvim-tree: ' .. desc, buffer = bufnr,
-      noremap = true, silent = true, nowait = true }
+    return {
+      desc = 'nvim-tree: ' .. desc,
+      buffer = bufnr,
+      noremap = true,
+      silent = true,
+      nowait = true
+    }
   end
   vim.keymap.set('n', 'l', api.tree.change_root_to_node, opts('CD'))
   vim.keymap.set('n', 'h', api.tree.change_root_to_parent, opts('Up'))
@@ -291,26 +280,18 @@ dashboard.section.footer.val = {
 alpha.setup(dashboard.config)
 
 -- LSP
-vim.lsp.enable({ "ty" }) -- python
-vim.lsp.enable({ "clangd" }) -- cpp
-
-require('lspsaga').setup({})
 require("mason").setup({
-	ui = {
-		icons = {
-			package_installed = "✓",
-			package_pending = "➜",
-			package_uninstalled = "✗",
-		},
-	},
+  ui = {
+    icons = {
+      package_installed = "✓",
+      package_pending = "➜",
+      package_uninstalled = "✗",
+    },
+  },
 })
-
-vim.keymap.set('n', '<Leader>e', '<cmd>Lspsaga show_cursor_diagnostics<CR>',opts)
-vim.keymap.set('n', '<Leader>k', '<cmd>Lspsaga diagnostic_jump_prev<CR>',opts)
-vim.keymap.set('n', '<Leader>j', '<cmd>Lspsaga diagnostic_jump_next<CR>',opts)
-vim.keymap.set('n', 'K', '<cmd>Lspsaga hover_doc<CR>',opts)
-vim.keymap.set('n', 'gd', '<cmd>Lspsaga peek_definition<CR>',opts)
-vim.keymap.set('n', 'gD', '<cmd>Lspsaga goto_definition<CR>',opts)
+vim.lsp.enable({ "ty" })     -- python
+vim.lsp.enable({ "clangd" }) -- cpp
+vim.lsp.enable({ "lua_ls" }) -- lua
 
 vim.api.nvim_create_autocmd('LspAttach', {
   group = vim.api.nvim_create_augroup('UserLspConfig', {}),
@@ -329,6 +310,18 @@ vim.diagnostic.config({
   update_in_insert = false,
   severity_sort = false,
 })
+
+-- Lspsaga
+require('lspsaga').setup({})
+vim.keymap.set('n', '<Leader>e', '<cmd>Lspsaga show_cursor_diagnostics<CR>', opts)
+vim.keymap.set('n', '<Leader>k', '<cmd>Lspsaga diagnostic_jump_prev<CR>', opts)
+vim.keymap.set('n', '<Leader>j', '<cmd>Lspsaga diagnostic_jump_next<CR>', opts)
+vim.keymap.set('n', 'K', '<cmd>Lspsaga hover_doc<CR>', opts)
+vim.keymap.set('n', 'gd', '<cmd>Lspsaga peek_definition<CR>', opts)
+vim.keymap.set('n', 'gD', '<cmd>Lspsaga goto_definition<CR>', opts)
+
+vim.keymap.set('n', '<Leader>ft', '<cmd>Lspsaga term_toggle<CR>', opts)
+vim.keymap.set('t', '<Leader>ft', '<cmd>Lspsaga term_toggle<CR>', opts)
 
 -- blink
 require("blink.cmp").setup({
@@ -429,3 +422,10 @@ require("noice").setup({
 
 -- ststusline
 require("evil")
+
+-- utils
+require('Comment').setup()
+require('nvim-autopairs').setup()
+require('neoscroll').setup({
+  mappings = { '<C-b>', '<C-f>' },
+})
