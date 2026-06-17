@@ -45,6 +45,7 @@ vim.pack.add({
   { src = 'https://github.com/MunifTanjim/nui.nvim' },
   { src = 'https://github.com/rcarriga/nvim-notify' },
 
+  { src = "https://github.com/akinsho/toggleterm.nvim" },
   { src = "https://github.com/rainbowhxch/accelerated-jk.nvim" },
   { src = "https://github.com/karb94/neoscroll.nvim" },
   { src = "https://github.com/windwp/nvim-autopairs" },
@@ -422,6 +423,13 @@ require("noice").setup({
 
 -- ststusline
 require("evil")
+
+-- toggleterm
+require("toggleterm").setup {
+  size = 80,
+  open_mapping = [[<Leader>tv]],
+  direction = 'vertical'
+}
 
 -- utils
 require('Comment').setup()
