@@ -16,7 +16,7 @@ vim.opt.scrolloff = 7
 vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
 vim.opt.mouse:append("a")
-vim.opt.cmdheight = 0
+vim.opt.cmdheight = 1
 vim.opt.winborder = "rounded"
 local opts = { noremap = true, silent = true }
 
@@ -49,6 +49,7 @@ vim.keymap.set("n", "U", ":lua vim.pack.update()<CR>", opts)
 vim.api.nvim_create_autocmd("TextYankPost", {
   callback = function() vim.hl.on_yank { higroup = "IncSearch", timeout = 150 } end,
 })
+vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter" }, { command = "checktime" })
 vim.api.nvim_create_autocmd("BufReadPost", {
   callback = function()
     if vim.fn.line("'\"") > 1 and vim.fn.line("'\"") <= vim.fn.line("$") then
@@ -57,12 +58,10 @@ vim.api.nvim_create_autocmd("BufReadPost", {
   end,
 })
 vim.api.nvim_create_autocmd("BufWritePost", {
-  pattern = { "*.cpp", "*.lua", "*.hpp", "*.cc", "*.c" },
-  callback = function() vim.lsp.buf.format() end
+  pattern = { "*.cpp", "*.lua", "*.hpp", "*.cc", "*.c" }, callback = function() vim.lsp.buf.format() end
 })
 vim.api.nvim_create_autocmd("BufWritePost", {
-  pattern = "*.py",
-  command = "silent exec '!python -m black % --line-length 140'",
+  pattern = "*.py", command = "silent exec '!python -m black % --line-length 140'"
 })
 
 local function insert_banner(lines)
@@ -96,12 +95,10 @@ local banner_cpp = {
 }
 
 vim.api.nvim_create_autocmd("BufNewFile", {
-  pattern = { "*.py", "*.jl" },
-  callback = function() insert_banner(banner_py) end,
+  pattern = { "*.py", "*.jl" }, callback = function() insert_banner(banner_py) end
 })
 vim.api.nvim_create_autocmd("BufNewFile", {
-  pattern = "*.cpp",
-  callback = function() insert_banner(banner_cpp) end,
+  pattern = "*.cpp", callback = function() insert_banner(banner_cpp) end
 })
 
 -- keymaps ----------------------------------------------------------------
