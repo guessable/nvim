@@ -16,7 +16,7 @@ vim.opt.scrolloff = 7
 vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
 vim.opt.mouse:append("a")
-vim.opt.cmdheight = 1
+vim.opt.cmdheight = 0
 vim.opt.winborder = "rounded"
 local opts = { noremap = true, silent = true }
 
@@ -29,10 +29,6 @@ vim.pack.add({
 
   { src = 'https://github.com/nvim-telescope/telescope.nvim' },
   { src = 'https://github.com/nvim-lua/plenary.nvim' },
-
-  { src = 'https://github.com/folke/noice.nvim' },
-  { src = 'https://github.com/MunifTanjim/nui.nvim' },
-  { src = 'https://github.com/rcarriga/nvim-notify' },
 
   { src = "https://github.com/catppuccin/nvim" },
   { src = "https://github.com/akinsho/bufferline.nvim" },
@@ -184,24 +180,6 @@ require("telescope").setup {
     mappings = { i = { ["<Leader>v"] = require("telescope.actions").select_vertical } },
   },
 }
-
--- noice
-require("noice").setup({
-  lsp = {
-    override = {
-      ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-      ["vim.lsp.util.stylize_markdown"] = true,
-      ["cmp.entry.get_documentation"] = true,
-    },
-  },
-  presets = {
-    bottom_search = true,
-    command_palette = true,
-    long_message_to_split = true,
-    inc_rename = false,
-    lsp_doc_border = false,
-  },
-})
 
 -- bufferline
 require("bufferline").setup {
