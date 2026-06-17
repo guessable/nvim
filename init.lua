@@ -41,10 +41,6 @@ vim.pack.add({
   { src = 'https://github.com/nvim-tree/nvim-tree.lua' },
   { src = 'https://github.com/nvim-tree/nvim-web-devicons' },
 
-  { src = 'https://github.com/folke/noice.nvim' },
-  { src = 'https://github.com/MunifTanjim/nui.nvim' },
-  { src = 'https://github.com/rcarriga/nvim-notify' },
-
   { src = "https://github.com/akinsho/toggleterm.nvim" },
   { src = "https://github.com/rainbowhxch/accelerated-jk.nvim" },
   { src = "https://github.com/karb94/neoscroll.nvim" },
@@ -400,24 +396,6 @@ require("blink.cmp").setup({
         },
       },
     },
-  },
-})
-
--- noice
-require("noice").setup({
-  lsp = {
-    override = {
-      ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-      ["vim.lsp.util.stylize_markdown"] = true,
-      ["cmp.entry.get_documentation"] = true,
-    },
-  },
-  presets = {
-    bottom_search = true,
-    command_palette = true,
-    long_message_to_split = true,
-    inc_rename = false,
-    lsp_doc_border = false,
   },
 })
 
