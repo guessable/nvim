@@ -23,6 +23,14 @@ vim.opt.cmdheight = 1
 vim.opt.winborder = "rounded"
 vim.o.whichwrap = vim.o.whichwrap .. "<>,h,l"
 
+vim.opt.shell = "powershell.exe"
+vim.opt.shellcmdflag =
+"-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;"
+vim.opt.shellredir = "-RedirectStandardOutput %s -NoNewWindow -Wait"
+vim.opt.shellpipe = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode"
+vim.opt.shellquote = ""
+vim.opt.shellxquote = ""
+
 local function map(mode, lhs, rhs, opts)
   vim.keymap.set(mode, lhs, rhs, vim.tbl_extend("force", { silent = true }, opts or {}))
 end
@@ -33,13 +41,14 @@ vim.pack.add({
   { src = "https://github.com/nvimdev/lspsaga.nvim" },
   { src = "https://github.com/mason-org/mason.nvim",                  name = "mason" },
   { src = "https://github.com/saghen/blink.cmp",                      version = "v1", name = "blink.cmp" },
-  { src = "https://github.com/ibhagwan/fzf-lua" },
+
+  { src = "https://github.com/nvim-telescope/telescope.nvim" },
+  { src = "https://github.com/nvim-lua/plenary.nvim" },
 
   { src = "https://github.com/catppuccin/nvim" },
   { src = "https://github.com/akinsho/bufferline.nvim" },
   { src = "https://github.com/nvim-lualine/lualine.nvim" },
   { src = "https://github.com/lukas-reineke/indent-blankline.nvim" },
-  { src = "https://github.com/romus204/tree-sitter-manager.nvim" }, -- paru -S tree-sitter-cli
   { src = "https://github.com/goolord/alpha-nvim" },
 
   { src = "https://github.com/nvim-tree/nvim-tree.lua" },
@@ -69,7 +78,7 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 
 -- Format on save
 vim.api.nvim_create_autocmd("BufWritePost", {
-  pattern = { "*.cpp", "*.hpp", "*.cc", "*.c", "*.lua" },
+  pattern = { "*.jl", "*.lua" },
   callback = function() vim.lsp.buf.format() end,
 })
 vim.api.nvim_create_autocmd("BufWritePost", {
@@ -94,23 +103,8 @@ local header_py = {
   "# @author: τ",
   "",
 }
-local header_cpp = {
-  "/************************",
-  '     "   ',
-  "   '':''",
-  "  ___:____      |\\/|",
-  ",'        `.    \\  /",
-  "|  O        \\___/  |",
-  "~^~^~^~^~^~^~^~^~^~^",
-  "@author: τ",
-  "*************************/",
-  "",
-}
 vim.api.nvim_create_autocmd("BufNewFile", {
   pattern = { "*.py", "*.jl" }, callback = function() insert_header(header_py) end
-})
-vim.api.nvim_create_autocmd("BufNewFile", {
-  pattern = { "*.cpp", "*.cc", "*.hpp", "*.h", "*.c" }, callback = function() insert_header(header_cpp) end
 })
 
 
@@ -150,10 +144,10 @@ for i = 1, 9 do
   map("n", "<Leader>" .. i, "<Cmd>BufferLineGoToBuffer " .. i .. "<CR>")
 end
 
--- FzfLua
-map("n", "<Leader>ff", ":FzfLua<CR>")
-map("n", "<Leader>fh", ":FzfLua history<CR>")
-map("n", "<Leader>fw", ":FzfLua live_grep<CR>")
+-- telescope
+map("n", "<Leader>ff", ":Telescope<CR>")
+map("n", "<Leader>fh", ":Telescope oldfiles<CR>")
+map("n", "<Leader>fw", ":Telescope live_grep<CR>")
 
 -- Lspsaga
 map("n", "<Leader>e", "<cmd>Lspsaga show_cursor_diagnostics<CR>")
@@ -162,8 +156,6 @@ map("n", "<Leader>j", "<cmd>Lspsaga diagnostic_jump_next<CR>")
 map("n", "K", "<cmd>Lspsaga hover_doc<CR>")
 map("n", "gd", "<cmd>Lspsaga peek_definition<CR>")
 map("n", "gD", "<cmd>Lspsaga goto_definition<CR>")
-map("n", "<Leader>ft", "<cmd>Lspsaga term_toggle<CR>")
-map("t", "<Leader>ft", "<cmd>Lspsaga term_toggle<CR>")
 
 -- Utils
 map("n", "<Leader>o", ":NvimTreeToggle<CR>")
@@ -179,17 +171,18 @@ require("catppuccin").setup({
 })
 vim.cmd.colorscheme "catppuccin"
 
--- tree-sitter
-require("tree-sitter-manager").setup({
-  auto_install = true,
-  -- Use built-in Neovim treesitter parsers
-  noauto_install = {
-    "c", "lua", "markdown", "markdown_inline", "query", "vim", "vimdoc"
+-- telescope
+local actions = require "telescope.actions"
+require('telescope').setup {
+  defaults = {
+    prompt_prefix = ' ',
+    mappings = {
+      i = {
+        ['<Leader>v'] = actions.select_vertical
+      },
+    },
   },
-})
-
--- fzf-lua
-require('fzf-lua').setup({ fzf_colors = { true } })
+}
 
 -- bufferline
 require("bufferline").setup {
@@ -251,7 +244,7 @@ require("mason").setup({
   ui = { icons = { package_installed = "✓", package_pending = "➜", package_uninstalled = "✗" } },
 })
 vim.lsp.enable({ "ty" })
-vim.lsp.enable({ "clangd" })
+vim.lsp.enable({ "julials" })
 vim.lsp.enable({ "lua_ls" })
 
 vim.api.nvim_create_autocmd("LspAttach", {
@@ -319,9 +312,6 @@ require("blink.cmp").setup({
   },
 })
 
--- statusline
-require("evil")
-
 -- dashboard
 local alpha = require 'alpha'
 local dashboard = require 'alpha.themes.startify'
@@ -344,7 +334,7 @@ dashboard.section.header.val = {
   ")`. _ _  _Seal_       `-       ..  - .    . - ~ ~ .    \\    ~-` ` `  `. _",
 }
 dashboard.section.top_buttons.val = {
-  dashboard.button("e", "  Fzf", ":FzfLua<CR>"),
+  dashboard.button("e", "  Telescope", ":Telescope<CR>"),
 }
 dashboard.section.bottom_buttons.val = {
   dashboard.button("q", "󰅚  Quit NVIM", ":qa<CR>"),
@@ -362,3 +352,6 @@ require("toggleterm").setup {
 require("Comment").setup()
 require("nvim-autopairs").setup()
 require("neoscroll").setup({ mappings = { "<C-b>", "<C-f>" } })
+
+-- statusline
+require("evil")
