@@ -1,11 +1,11 @@
 -- settings ---------------------------------------------------------------
 require("vim._core.ui2").enable({ enable = true })
-vim.opt.autochdir = true
-vim.opt.autoread = true
-vim.opt.relativenumber = true
 vim.opt.number = true
+vim.opt.relativenumber = true
 vim.opt.expandtab = true
 vim.opt.autoindent = true
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
 vim.opt.splitright = true
 vim.opt.splitbelow = true
 vim.opt.ignorecase = true
@@ -16,13 +16,16 @@ vim.opt.cursorline = true
 vim.opt.cursorlineopt = "number"
 vim.opt.signcolumn = "no"
 vim.opt.scrolloff = 7
-vim.opt.tabstop = 2
-vim.opt.shiftwidth = 2
+vim.opt.autochdir = true
+vim.opt.autoread = true
 vim.opt.mouse:append("a")
 vim.opt.cmdheight = 1
 vim.opt.winborder = "rounded"
 vim.o.whichwrap = vim.o.whichwrap .. "<>,h,l"
-local opts = { noremap = true, silent = true }
+
+local function map(mode, lhs, rhs, opts)
+  vim.keymap.set(mode, lhs, rhs, vim.tbl_extend("force", { silent = true }, opts or {}))
+end
 
 -- plugins ----------------------------------------------------------------
 vim.pack.add({
@@ -49,7 +52,7 @@ vim.pack.add({
   { src = "https://github.com/windwp/nvim-autopairs" },
   { src = "https://github.com/numToStr/Comment.nvim" },
 })
-vim.keymap.set("n", "U", ":lua vim.pack.update()<CR>", opts)
+map("n", "U", ":lua vim.pack.update()<CR>")
 
 -- autocmds ---------------------------------------------------------------
 vim.api.nvim_create_autocmd("TextYankPost", {
@@ -63,18 +66,23 @@ vim.api.nvim_create_autocmd("BufReadPost", {
     end
   end,
 })
+
+-- Format on save
 vim.api.nvim_create_autocmd("BufWritePost", {
-  pattern = { "*.cpp", "*.hpp", "*.cc", "*.c", "*.lua" }, callback = function() vim.lsp.buf.format() end
+  pattern = { "*.cpp", "*.hpp", "*.cc", "*.c", "*.lua" },
+  callback = function() vim.lsp.buf.format() end,
 })
 vim.api.nvim_create_autocmd("BufWritePost", {
-  pattern = "*.py", command = "silent exec '!python -m black % --line-length 140'"
+  pattern = "*.py",
+  command = "silent exec '!python -m black % --line-length 140'",
 })
 
-local function insert_banner(lines)
+-- header
+local function insert_header(lines)
   vim.api.nvim_buf_set_lines(0, 0, 0, false, lines)
 end
 
-local banner_py = {
+local header_py = {
   "# ---------------------",
   '#      "   ',
   "#    '':''",
@@ -86,8 +94,7 @@ local banner_py = {
   "# @author: τ",
   "",
 }
-
-local banner_cpp = {
+local header_cpp = {
   "/************************",
   '     "   ',
   "   '':''",
@@ -99,71 +106,71 @@ local banner_cpp = {
   "*************************/",
   "",
 }
+vim.api.nvim_create_autocmd("BufNewFile", {
+  pattern = { "*.py", "*.jl" }, callback = function() insert_header(header_py) end
+})
+vim.api.nvim_create_autocmd("BufNewFile", {
+  pattern = { "*.cpp", "*.cc", "*.hpp", "*.h", "*.c" }, callback = function() insert_header(header_cpp) end
+})
 
-vim.api.nvim_create_autocmd("BufNewFile", {
-  pattern = { "*.py", "*.jl" }, callback = function() insert_banner(banner_py) end
-})
-vim.api.nvim_create_autocmd("BufNewFile", {
-  pattern = "*.cpp", callback = function() insert_banner(banner_cpp) end
-})
 
 -- keymaps ----------------------------------------------------------------
-vim.keymap.set("n", "<C-q>", ":qa!<CR>", opts)
-vim.keymap.set("n", "<Leader>nh", ":nohl<CR>", opts)
-vim.keymap.set("n", "<Leader>bd", ":bd<CR>", opts)
-vim.keymap.set("n", "<C-s>", ":w<CR>", opts)
-vim.keymap.set("i", "<C-s>", "<Esc>:w<CR>a", opts)
+map("n", "<C-q>", ":qa!<CR>")
+map("n", "<Leader>nh", ":nohl<CR>")
+map("n", "<Leader>bd", ":bd<CR>")
+map("n", "<C-s>", ":w<CR>")
+map("i", "<C-s>", "<Esc>:w<CR>a")
 
-vim.keymap.set("n", "<Up>", ":res +5<CR>", opts)
-vim.keymap.set("n", "<Down>", ":res -5<CR>", opts)
-vim.keymap.set("n", "<Left>", ":vertical resize-5<CR>", opts)
-vim.keymap.set("n", "<Right>", ":vertical resize+5<CR>", opts)
+map("n", "<Up>", ":res +5<CR>")
+map("n", "<Down>", ":res -5<CR>")
+map("n", "<Left>", ":vertical resize-5<CR>")
+map("n", "<Right>", ":vertical resize+5<CR>")
 
-vim.keymap.set("n", "<C-a>", "<Home>", opts)
-vim.keymap.set("n", "<C-e>", "<End>", opts)
-vim.keymap.set("i", "<C-a>", "<Esc>0i", opts)
-vim.keymap.set("i", "<C-e>", "<Esc>$a", opts)
-vim.keymap.set("i", "<C-b>", "<Left>", opts)
-vim.keymap.set("i", "<C-f>", "<Right>", opts)
+map("n", "<C-a>", "<Home>")
+map("n", "<C-e>", "<End>")
+map("i", "<C-a>", "<Esc>0i")
+map("i", "<C-e>", "<Esc>$a")
+map("i", "<C-b>", "<Left>")
+map("i", "<C-f>", "<Right>")
 
-vim.keymap.set("n", "<C-l>", "<C-w>l", opts)
-vim.keymap.set("n", "<C-h>", "<C-w>h", opts)
-vim.keymap.set("n", "<C-k>", "<C-w>k", opts)
-vim.keymap.set("n", "<C-j>", "<C-w>j", opts)
-vim.keymap.set("n", "<C-o>", "<C-w>o", opts)
+map("n", "<C-l>", "<C-w>l")
+map("n", "<C-h>", "<C-w>h")
+map("n", "<C-k>", "<C-w>k")
+map("n", "<C-j>", "<C-w>j")
+map("n", "<C-o>", "<C-w>o")
 
-vim.keymap.set("t", ":q", "<C-\\><C-n>:bdelete! %<CR>", opts)
-vim.keymap.set("t", "<ESC>", "<C-\\><C-n>", opts)
-vim.keymap.set("t", "<C-h>", "<C-\\><C-n><C-w>h", opts)
-vim.keymap.set("t", "<C-j>", "<C-\\><C-n><C-w>j", opts)
-vim.keymap.set("t", "<C-k>", "<C-\\><C-n><C-w>k", opts)
+map("t", ":q", "<C-\\><C-n>:bdelete! %<CR>")
+map("t", "<ESC>", "<C-\\><C-n>")
+map("t", "<C-h>", "<C-\\><C-n><C-w>h")
+map("t", "<C-j>", "<C-\\><C-n><C-w>j")
+map("t", "<C-k>", "<C-\\><C-n><C-w>k")
 
--- bufferline
+-- Bufferline
 for i = 1, 9 do
-  vim.keymap.set("n", "<Leader>" .. i, "<Cmd>BufferLineGoToBuffer " .. i .. "<CR>", opts)
+  map("n", "<Leader>" .. i, "<Cmd>BufferLineGoToBuffer " .. i .. "<CR>")
 end
 
 -- FzfLua
-vim.keymap.set("n", "<Leader>ff", ":FzfLua<CR>", opts)
-vim.keymap.set("n", "<Leader>fh", ":FzfLua history<CR>", opts)
-vim.keymap.set("n", "<Leader>fw", ":FzfLua live_grep<CR>", opts)
+map("n", "<Leader>ff", ":FzfLua<CR>")
+map("n", "<Leader>fh", ":FzfLua history<CR>")
+map("n", "<Leader>fw", ":FzfLua live_grep<CR>")
 
--- lspsaga
-vim.keymap.set("n", "<Leader>e", "<cmd>Lspsaga show_cursor_diagnostics<CR>", opts)
-vim.keymap.set("n", "<Leader>k", "<cmd>Lspsaga diagnostic_jump_prev<CR>", opts)
-vim.keymap.set("n", "<Leader>j", "<cmd>Lspsaga diagnostic_jump_next<CR>", opts)
-vim.keymap.set("n", "K", "<cmd>Lspsaga hover_doc<CR>", opts)
-vim.keymap.set("n", "gd", "<cmd>Lspsaga peek_definition<CR>", opts)
-vim.keymap.set("n", "gD", "<cmd>Lspsaga goto_definition<CR>", opts)
-vim.keymap.set("n", "<Leader>ft", "<cmd>Lspsaga term_toggle<CR>", opts)
-vim.keymap.set("t", "<Leader>ft", "<cmd>Lspsaga term_toggle<CR>", opts)
+-- Lspsaga
+map("n", "<Leader>e", "<cmd>Lspsaga show_cursor_diagnostics<CR>")
+map("n", "<Leader>k", "<cmd>Lspsaga diagnostic_jump_prev<CR>")
+map("n", "<Leader>j", "<cmd>Lspsaga diagnostic_jump_next<CR>")
+map("n", "K", "<cmd>Lspsaga hover_doc<CR>")
+map("n", "gd", "<cmd>Lspsaga peek_definition<CR>")
+map("n", "gD", "<cmd>Lspsaga goto_definition<CR>")
+map("n", "<Leader>ft", "<cmd>Lspsaga term_toggle<CR>")
+map("t", "<Leader>ft", "<cmd>Lspsaga term_toggle<CR>")
 
--- utils
-vim.keymap.set("n", "<Leader>o", ":NvimTreeToggle<CR>", opts)
-vim.keymap.set("n", "<C-_>", "<Plug>(comment_toggle_linewise_current)", opts)
-vim.keymap.set("x", "<C-_>", "<Plug>(comment_toggle_linewise_visual)", opts)
-vim.keymap.set("n", "j", "<Plug>(accelerated_jk_gj)", opts)
-vim.keymap.set("n", "k", "<Plug>(accelerated_jk_gk)", opts)
+-- Utils
+map("n", "<Leader>o", ":NvimTreeToggle<CR>")
+map("n", "<C-_>", "<Plug>(comment_toggle_linewise_current)")
+map("x", "<C-_>", "<Plug>(comment_toggle_linewise_visual)")
+map("n", "j", "<Plug>(accelerated_jk_gj)")
+map("n", "k", "<Plug>(accelerated_jk_gk)")
 
 -- plugins config ---------------------------------------------------------
 require("catppuccin").setup({
