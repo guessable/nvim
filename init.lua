@@ -1,4 +1,5 @@
 -- settings ---------------------------------------------------------------
+require("vim._core.ui2").enable({ enable = true })
 vim.opt.autochdir = true
 vim.opt.autoread = true
 vim.opt.relativenumber = true
@@ -11,6 +12,8 @@ vim.opt.ignorecase = true
 vim.opt.smartcase = true
 vim.opt.termguicolors = true
 vim.opt.undofile = true
+vim.opt.cursorline = true
+vim.opt.cursorlineopt = "number"
 vim.opt.signcolumn = "no"
 vim.opt.scrolloff = 7
 vim.opt.tabstop = 2
@@ -18,25 +21,28 @@ vim.opt.shiftwidth = 2
 vim.opt.mouse:append("a")
 vim.opt.cmdheight = 1
 vim.opt.winborder = "rounded"
+vim.o.whichwrap = vim.o.whichwrap .. "<>,h,l"
 local opts = { noremap = true, silent = true }
 
 -- plugins ----------------------------------------------------------------
 vim.pack.add({
-  { src = 'https://github.com/neovim/nvim-lspconfig' },
-  { src = 'https://github.com/nvimdev/lspsaga.nvim' },
-  { src = "https://github.com/mason-org/mason.nvim",           name = "mason" },
-  { src = "https://github.com/saghen/blink.cmp",               version = "v1", name = "blink.cmp" },
-
-  { src = 'https://github.com/nvim-telescope/telescope.nvim' },
-  { src = 'https://github.com/nvim-lua/plenary.nvim' },
+  { src = "https://github.com/neovim/nvim-lspconfig" },
+  { src = "https://github.com/nvimdev/lspsaga.nvim" },
+  { src = "https://github.com/mason-org/mason.nvim",                  name = "mason" },
+  { src = "https://github.com/saghen/blink.cmp",                      version = "v1", name = "blink.cmp" },
+  { src = "https://github.com/ibhagwan/fzf-lua" },
 
   { src = "https://github.com/catppuccin/nvim" },
   { src = "https://github.com/akinsho/bufferline.nvim" },
   { src = "https://github.com/nvim-lualine/lualine.nvim" },
+  { src = "https://github.com/lukas-reineke/indent-blankline.nvim" },
+  { src = "https://github.com/romus204/tree-sitter-manager.nvim" }, -- paru -S tree-sitter-cli
+  { src = "https://github.com/goolord/alpha-nvim" },
 
-  { src = 'https://github.com/nvim-tree/nvim-tree.lua' },
-  { src = 'https://github.com/nvim-tree/nvim-web-devicons' },
+  { src = "https://github.com/nvim-tree/nvim-tree.lua" },
+  { src = "https://github.com/nvim-tree/nvim-web-devicons" },
 
+  { src = "https://github.com/rachartier/tiny-inline-diagnostic.nvim" },
   { src = "https://github.com/akinsho/toggleterm.nvim" },
   { src = "https://github.com/rainbowhxch/accelerated-jk.nvim" },
   { src = "https://github.com/karb94/neoscroll.nvim" },
@@ -58,7 +64,7 @@ vim.api.nvim_create_autocmd("BufReadPost", {
   end,
 })
 vim.api.nvim_create_autocmd("BufWritePost", {
-  pattern = { "*.cpp", "*.lua", "*.hpp", "*.cc", "*.c" }, callback = function() vim.lsp.buf.format() end
+  pattern = { "*.cpp", "*.hpp", "*.cc", "*.c", "*.lua" }, callback = function() vim.lsp.buf.format() end
 })
 vim.api.nvim_create_autocmd("BufWritePost", {
   pattern = "*.py", command = "silent exec '!python -m black % --line-length 140'"
@@ -102,7 +108,7 @@ vim.api.nvim_create_autocmd("BufNewFile", {
 })
 
 -- keymaps ----------------------------------------------------------------
-vim.keymap.set("n", "<C-q>", ":q!<CR>", opts)
+vim.keymap.set("n", "<C-q>", ":qa!<CR>", opts)
 vim.keymap.set("n", "<Leader>nh", ":nohl<CR>", opts)
 vim.keymap.set("n", "<Leader>bd", ":bd<CR>", opts)
 vim.keymap.set("n", "<C-s>", ":w<CR>", opts)
@@ -137,14 +143,10 @@ for i = 1, 9 do
   vim.keymap.set("n", "<Leader>" .. i, "<Cmd>BufferLineGoToBuffer " .. i .. "<CR>", opts)
 end
 
--- telescope
-vim.keymap.set("n", "<Leader>fh", ":Telescope oldfiles<CR>", opts)
-vim.keymap.set("n", "<Leader>fw", ":Telescope live_grep<CR>", opts)
-vim.keymap.set("n", "<Leader>ff", ":Telescope find_files<CR>", opts)
-vim.keymap.set("n", "<Leader>fb", ":Telescope buffers<CR>", opts)
-vim.keymap.set("n", "<Leader>fm", ":Telescope marks<CR>", opts)
-vim.keymap.set("n", "<Leader>fj", ":Telescope diagnostics<CR>", opts)
-vim.keymap.set("n", "<Leader>fs", ":Telescope lsp_document_symbols<CR>", opts)
+-- FzfLua
+vim.keymap.set("n", "<Leader>ff", ":FzfLua<CR>", opts)
+vim.keymap.set("n", "<Leader>fh", ":FzfLua history<CR>", opts)
+vim.keymap.set("n", "<Leader>fw", ":FzfLua live_grep<CR>", opts)
 
 -- lspsaga
 vim.keymap.set("n", "<Leader>e", "<cmd>Lspsaga show_cursor_diagnostics<CR>", opts)
@@ -170,13 +172,17 @@ require("catppuccin").setup({
 })
 vim.cmd.colorscheme "catppuccin"
 
--- telescope
-require("telescope").setup {
-  defaults = {
-    prompt_prefix = ' ',
-    mappings = { i = { ["<Leader>v"] = require("telescope.actions").select_vertical } },
+-- tree-sitter
+require("tree-sitter-manager").setup({
+  auto_install = true,
+  -- Use built-in Neovim treesitter parsers
+  noauto_install = {
+    "c", "lua", "markdown", "markdown_inline", "query", "vim", "vimdoc"
   },
-}
+})
+
+-- fzf-lua
+require('fzf-lua').setup({ fzf_colors = { true } })
 
 -- bufferline
 require("bufferline").setup {
@@ -197,6 +203,17 @@ require("bufferline").setup {
     } },
   },
 }
+
+-- indent-blankline
+require("ibl").setup({
+  exclude = { filetypes = { "lua", "cpp" } },
+  indent = { char = "┊" },
+  scope = {
+    show_start = false,
+    show_end = false,
+    highlight = { "Function", "Label" },
+  }
+})
 
 -- nvim-tree
 vim.g.loaded_netrw = 1
@@ -242,9 +259,21 @@ vim.api.nvim_create_autocmd("LspAttach", {
 vim.diagnostic.config({
   virtual_text = false,
   signs = false,
-  underline = true,
+  underline = false,
   update_in_insert = false,
   severity_sort = false,
+})
+
+-- inline-diagnostic
+require("tiny-inline-diagnostic").setup({
+  options = {
+    add_messages = {
+      display_count = true,
+    },
+    multilines = {
+      enabled = true,
+    },
+  },
 })
 
 -- lspsaga
@@ -285,6 +314,35 @@ require("blink.cmp").setup({
 
 -- statusline
 require("evil")
+
+-- dashboard
+local alpha = require 'alpha'
+local dashboard = require 'alpha.themes.startify'
+dashboard.section.header.val = {
+  "                                      _",
+  "                               _.-~~.)",
+  "         _.--~~~~~---....__  .' . .,'",
+  "       ,'. . . . . . . . . .~- ._ (",
+  "      ( .. .g. . . . . . . . . . .~-._",
+  "   .~__.-~    ~`. . . . . . . . . . . -.",
+  "   `----..._      ~-=~~-. . . . . . . . ~-.",
+  "             ~-._   `-._ ~=_~~--. . . . . .~.",
+  "              | .~-.._  ~--._-.    ~-. . . . ~-.",
+  "               \\ .(   ~~--.._~'       `. . . . .~-.                ,",
+  "                            ~~--.._    `. . . . . ~-.    .- .   ,'/",
+  "_  . _ . -~\\        _ ..  _          ~~--.`_. . . . . ~-_     ,-','`  .",
+  "              ._           ~                ~--. . . . .~=.-'. /. `",
+  "        - . -~            -. _ . - ~ - _   - ~     ~--..__~ _,. /   \\  - ~",
+  "               . .. ..                   ~-               ~~_. (  `",
+  ")`. _ _  _Seal_       `-       ..  - .    . - ~ ~ .    \\    ~-` ` `  `. _",
+}
+dashboard.section.top_buttons.val = {
+  dashboard.button("e", "  Fzf", ":FzfLua<CR>"),
+}
+dashboard.section.bottom_buttons.val = {
+  dashboard.button("q", "󰅚  Quit NVIM", ":qa<CR>"),
+}
+alpha.setup(dashboard.config)
 
 -- toggleterm
 require("toggleterm").setup {
