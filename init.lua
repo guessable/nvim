@@ -23,7 +23,7 @@ vim.opt.cmdheight = 1
 vim.opt.winborder = "rounded"
 vim.o.whichwrap = vim.o.whichwrap .. "<>,h,l"
 
-local function map(mode, lhs, rhs, opts)
+local function map(mode, lhs, rhs)
   vim.keymap.set(mode, lhs, rhs, vim.tbl_extend("force", { silent = true }, opts or {}))
 end
 
@@ -31,24 +31,27 @@ end
 vim.pack.add({
   { src = "https://github.com/neovim/nvim-lspconfig" },
   { src = "https://github.com/nvimdev/lspsaga.nvim" },
-  { src = "https://github.com/mason-org/mason.nvim",                  name = "mason" },
-  { src = "https://github.com/saghen/blink.cmp",                      version = "v1", name = "blink.cmp" },
-  { src = "https://github.com/ibhagwan/fzf-lua" },
+  { src = "https://github.com/mason-org/mason.nvim",                   name = "mason" },
+  { src = "https://github.com/saghen/blink.cmp",                       version = "v1", name = "blink.cmp" },
+
+  { src = "https://github.com/nvim-telescope/telescope.nvim" },
+  { src = "https://github.com/nvim-telescope/telescope-ui-select.nvim" },
+  { src = "https://github.com/nvim-lua/plenary.nvim" },
+  { src = "https://github.com/Shatur/neovim-session-manager" },
 
   { src = "https://github.com/catppuccin/nvim" },
   { src = "https://github.com/akinsho/bufferline.nvim" },
   { src = "https://github.com/nvim-lualine/lualine.nvim" },
+  { src = "https://github.com/goolord/alpha-nvim" },
   { src = "https://github.com/lukas-reineke/indent-blankline.nvim" },
   { src = "https://github.com/romus204/tree-sitter-manager.nvim" }, -- paru -S tree-sitter-cli
-  { src = "https://github.com/goolord/alpha-nvim" },
 
   { src = "https://github.com/nvim-tree/nvim-tree.lua" },
   { src = "https://github.com/nvim-tree/nvim-web-devicons" },
 
+  { src = "https://github.com/rachartier/tiny-cmdline.nvim" },
   { src = "https://github.com/rachartier/tiny-inline-diagnostic.nvim" },
-  { src = "https://github.com/akinsho/toggleterm.nvim" },
   { src = "https://github.com/rainbowhxch/accelerated-jk.nvim" },
-  { src = "https://github.com/karb94/neoscroll.nvim" },
   { src = "https://github.com/windwp/nvim-autopairs" },
   { src = "https://github.com/numToStr/Comment.nvim" },
 })
@@ -63,6 +66,20 @@ vim.api.nvim_create_autocmd("BufReadPost", {
   callback = function()
     if vim.fn.line("'\"") > 1 and vim.fn.line("'\"") <= vim.fn.line("$") then
       vim.cmd("normal! g'\"")
+    end
+  end,
+})
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "*",
+  callback = function()
+    vim.opt_local.formatoptions:remove({ "c", "r" })
+  end,
+})
+vim.api.nvim_create_autocmd("BufEnter", {
+  pattern = "term://*",
+  callback = function()
+    if vim.bo.buftype == "terminal" then
+      vim.cmd.startinsert()
     end
   end,
 })
@@ -107,19 +124,20 @@ local header_cpp = {
   "",
 }
 vim.api.nvim_create_autocmd("BufNewFile", {
-  pattern = { "*.py", "*.jl" }, callback = function() insert_header(header_py) end
+  pattern = { "*.py" }, callback = function() insert_header(header_py) end
 })
 vim.api.nvim_create_autocmd("BufNewFile", {
   pattern = { "*.cpp", "*.cc", "*.hpp", "*.h", "*.c" }, callback = function() insert_header(header_cpp) end
 })
 
-
 -- keymaps ----------------------------------------------------------------
 map("n", "<C-q>", ":qa!<CR>")
+map("i", "<C-q>", "<Esc>:qa!<CR>")
+map("t", "<C-q>", "<C-\\><C-n>:qa!<CR>")
 map("n", "<Leader>nh", ":nohl<CR>")
 map("n", "<Leader>bd", ":bd<CR>")
-map("n", "<C-s>", ":w<CR>")
-map("i", "<C-s>", "<Esc>:w<CR>a")
+map("n", "<C-s>", ":silent w<CR>")
+map("i", "<C-s>", "<Esc>:silent w<CR>a")
 
 map("n", "<Up>", ":res +5<CR>")
 map("n", "<Down>", ":res -5<CR>")
@@ -141,19 +159,32 @@ map("n", "<C-o>", "<C-w>o")
 
 map("t", ":q", "<C-\\><C-n>:bdelete! %<CR>")
 map("t", "<ESC>", "<C-\\><C-n>")
-map("t", "<C-h>", "<C-\\><C-n><C-w>h")
-map("t", "<C-j>", "<C-\\><C-n><C-w>j")
-map("t", "<C-k>", "<C-\\><C-n><C-w>k")
+
+-- tab
+for i = 1, 9 do
+  map("n", "<Leader>t" .. i, i .. "gt")
+  map("t", "<Leader>t" .. i, "<C-\\><C-n>" .. i .. "gt")
+end
+
+-- term
+map("n", "<Leader>tt", "<cmd>tab terminal<CR>i")
 
 -- Bufferline
 for i = 1, 9 do
-  map("n", "<Leader>" .. i, "<Cmd>BufferLineGoToBuffer " .. i .. "<CR>")
+  map("n", "<Leader>b" .. i, "<Cmd>BufferLineGoToBuffer " .. i .. "<CR>")
+  map("t", "<Leader>b" .. i, "")
 end
 
--- FzfLua
-map("n", "<Leader>ff", ":FzfLua<CR>")
-map("n", "<Leader>fh", ":FzfLua history<CR>")
-map("n", "<Leader>fw", ":FzfLua live_grep<CR>")
+-- telescope
+map("n", "<Leader>ff", "<cmd>Telescope builtin theme=dropdown previewer=false<CR>")
+map("n", "<Leader>fh", "<cmd>Telescope oldfiles<CR>")
+map("n", "<Leader>fd", "<cmd>Telescope find_files<CR>")
+map("n", "<Leader>fb", "<cmd>Telescope buffers theme=dropdown previewer=false<CR>")
+map("n", "<C-f>", "<cmd>Telescope live_grep<CR>")
+
+-- Session
+map("n", "<Leader>ss", "<cmd>SessionManager<CR>")
+map("n", "<Leader>fp", "<cmd>SessionManager load_session<CR>")
 
 -- Lspsaga
 map("n", "<Leader>e", "<cmd>Lspsaga show_cursor_diagnostics<CR>")
@@ -162,11 +193,11 @@ map("n", "<Leader>j", "<cmd>Lspsaga diagnostic_jump_next<CR>")
 map("n", "K", "<cmd>Lspsaga hover_doc<CR>")
 map("n", "gd", "<cmd>Lspsaga peek_definition<CR>")
 map("n", "gD", "<cmd>Lspsaga goto_definition<CR>")
-map("n", "<Leader>ft", "<cmd>Lspsaga term_toggle<CR>")
-map("t", "<Leader>ft", "<cmd>Lspsaga term_toggle<CR>")
+map("n", "<Leader>tf", "<cmd>Lspsaga term_toggle<CR>")
+map("t", "<Leader>tf", "<cmd>Lspsaga term_toggle<CR>")
 
 -- Utils
-map("n", "<Leader>o", ":NvimTreeToggle<CR>")
+map("n", "<C-b>", "<cmd>NvimTreeToggle<CR>")
 map("n", "<C-_>", "<Plug>(comment_toggle_linewise_current)")
 map("x", "<C-_>", "<Plug>(comment_toggle_linewise_visual)")
 map("n", "j", "<Plug>(accelerated_jk_gj)")
@@ -188,8 +219,26 @@ require("tree-sitter-manager").setup({
   },
 })
 
--- fzf-lua
-require('fzf-lua').setup({ fzf_colors = { true } })
+-- telescope
+local actions = require "telescope.actions"
+require('telescope').setup {
+  defaults = {
+    prompt_prefix = ' ',
+    mappings = {
+      i = { ['<Leader>v'] = actions.select_vertical }
+    }
+  },
+  extensions = {
+    ["ui-select"] = {
+      require("telescope.themes").get_dropdown {}
+    }
+  }
+}
+require("telescope").load_extension("ui-select")
+
+-- Session
+local config = require('session_manager.config')
+require('session_manager').setup({ autoload_mode = config.AutoloadMode.Disabled }) -- AutoloadMode.LastSession
 
 -- bufferline
 require("bufferline").setup {
@@ -202,12 +251,16 @@ require("bufferline").setup {
       require("bufferline").style_preset.no_italic,
       require("bufferline").style_preset.no_bold,
     },
-    offsets = { {
+    offsets = {
       filetype = "NvimTree",
       text = "File Explorer",
       highlight = "Directory",
       text_align = "center",
-    } },
+    },
+    custom_filter = function(bufnr)
+      local bt = vim.bo[bufnr].buftype
+      return bt ~= "terminal" and bt ~= "help"
+    end,
   },
 }
 
@@ -250,9 +303,9 @@ require("nvim-tree").setup({
 require("mason").setup({
   ui = { icons = { package_installed = "✓", package_pending = "➜", package_uninstalled = "✗" } },
 })
-vim.lsp.enable({ "ty" })
-vim.lsp.enable({ "clangd" })
-vim.lsp.enable({ "lua_ls" })
+vim.lsp.enable({ "ty" })     -- python
+vim.lsp.enable({ "clangd" }) -- cpp
+vim.lsp.enable({ "lua_ls" }) -- lua
 
 vim.api.nvim_create_autocmd("LspAttach", {
   group = vim.api.nvim_create_augroup("UserLspConfig", {}),
@@ -319,12 +372,9 @@ require("blink.cmp").setup({
   },
 })
 
--- statusline
-require("evil")
-
 -- dashboard
 local alpha = require 'alpha'
-local dashboard = require 'alpha.themes.startify'
+local dashboard = require 'alpha.themes.dashboard'
 dashboard.section.header.val = {
   "                                      _",
   "                               _.-~~.)",
@@ -341,24 +391,30 @@ dashboard.section.header.val = {
   "              ._           ~                ~--. . . . .~=.-'. /. `",
   "        - . -~            -. _ . - ~ - _   - ~     ~--..__~ _,. /   \\  - ~",
   "               . .. ..                   ~-               ~~_. (  `",
-  ")`. _ _  _Seal_       `-       ..  - .    . - ~ ~ .    \\    ~-` ` `  `. _",
+  ")`. _ _  _Ocean_       `-       ..  - .    . - ~ ~ .    \\    ~-` ` `  `. _",
 }
-dashboard.section.top_buttons.val = {
-  dashboard.button("e", "  Fzf", ":FzfLua<CR>"),
+dashboard.section.buttons.val = {
+  dashboard.button("<Leader> f f", "  Telescope", "<cmd>Telescope builtin theme=dropdown previewer=false<CR>"),
+  dashboard.button("<Leader> s s", "  Session", "<cmd>SessionManager<CR>"),
+  dashboard.button("<Leader> f p", "  Load session", "<cmd>SessionManager load_session<CR>"),
+  dashboard.button("<Leader> f d", "  Find files", "<cmd>Telescope find_files<CR>"),
+  dashboard.button("<Leader> f h", "  History", "<cmd>Telescope oldfiles<CR>"),
+  dashboard.button("<Leader> t t", "  Term", "<cmd>tab terminal<CR>i"),
+  dashboard.button("<Leader> c f", "  Config", ":e ~/.config/nvim/init.lua<CR>"),
+  dashboard.button("<Leader> c h", "  Checkhealth", ":checkhealth<CR>"),
 }
-dashboard.section.bottom_buttons.val = {
-  dashboard.button("q", "󰅚  Quit NVIM", ":qa<CR>"),
-}
+dashboard.section.footer.val = { "-Δu = f" }
 alpha.setup(dashboard.config)
 
--- toggleterm
-require("toggleterm").setup {
-  size = 80,
-  open_mapping = [[<Leader>tv]],
-  direction = "vertical",
-}
+-- cmdline
+vim.o.cmdheight = 0
+require("tiny-cmdline").setup({ width = { value = "24%" }, title = { enabled = true } })
 
--- utils
+-- Comment
 require("Comment").setup()
+
+-- pairs
 require("nvim-autopairs").setup()
-require("neoscroll").setup({ mappings = { "<C-b>", "<C-f>" } })
+
+-- statusline
+require("dolphin_tri")
