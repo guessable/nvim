@@ -39,7 +39,7 @@ vim.pack.add({
   { src = "https://github.com/nvim-lua/plenary.nvim" },
   { src = "https://github.com/Shatur/neovim-session-manager" },
 
-  { src = "https://github.com/catppuccin/nvim" },
+  { src = "https://github.com/folke/tokyonight.nvim" },
   { src = "https://github.com/akinsho/bufferline.nvim" },
   { src = "https://github.com/nvim-lualine/lualine.nvim" },
   { src = "https://github.com/goolord/alpha-nvim" },
@@ -130,12 +130,25 @@ vim.api.nvim_create_autocmd("BufNewFile", {
   pattern = { "*.cpp", "*.cc", "*.hpp", "*.h", "*.c" }, callback = function() insert_header(header_cpp) end
 })
 
+-- run python code
+local function run_python()
+  local file = vim.api.nvim_buf_get_name(0)
+  vim.cmd("botright split")
+  vim.cmd("resize 14")
+  vim.cmd("terminal python " .. vim.fn.shellescape(file))
+  vim.cmd("startinsert")
+end
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "python",
+  callback = function()
+    vim.keymap.set("n", "<leader>r", run_python, { buffer = true, desc = "Run Python Code" })
+  end
+})
+
 -- keymaps ----------------------------------------------------------------
 map("n", "<C-q>", ":qa!<CR>")
-map("i", "<C-q>", "<Esc>:qa!<CR>")
-map("t", "<C-q>", "<C-\\><C-n>:qa!<CR>")
-map("n", "<Leader>nh", ":nohl<CR>")
 map("n", "<Leader>bd", ":bd<CR>")
+map("n", "<Leader>nh", ":nohl<CR>")
 map("n", "<C-s>", ":silent w<CR>")
 map("i", "<C-s>", "<Esc>:silent w<CR>a")
 
@@ -144,21 +157,19 @@ map("n", "<Down>", ":res -5<CR>")
 map("n", "<Left>", ":vertical resize-5<CR>")
 map("n", "<Right>", ":vertical resize+5<CR>")
 
-map("n", "<C-a>", "<Home>")
 map("n", "<C-e>", "<End>")
-map("i", "<C-a>", "<Esc>0i")
 map("i", "<C-e>", "<Esc>$a")
-map("i", "<C-b>", "<Left>")
-map("i", "<C-f>", "<Right>")
-
-map("n", "<C-l>", "<C-w>l")
-map("n", "<C-h>", "<C-w>h")
-map("n", "<C-k>", "<C-w>k")
-map("n", "<C-j>", "<C-w>j")
 map("n", "<C-o>", "<C-w>o")
 
 map("t", ":q", "<C-\\><C-n>:bdelete! %<CR>")
 map("t", "<ESC>", "<C-\\><C-n>")
+
+for i, char in ipairs({ "l", "h", "j", "k" }) do
+  map("n", "<C-" .. char .. ">", "<C-w>" .. char)
+  if char ~= "l" then
+    map("t", "<C-" .. char .. ">", "<C-\\><C-n><C-w>" .. char)
+  end
+end
 
 -- tab
 for i = 1, 9 do
@@ -172,7 +183,6 @@ map("n", "<Leader>tt", "<cmd>tab terminal<CR>i")
 -- Bufferline
 for i = 1, 9 do
   map("n", "<Leader>b" .. i, "<Cmd>BufferLineGoToBuffer " .. i .. "<CR>")
-  map("t", "<Leader>b" .. i, "")
 end
 
 -- telescope
@@ -204,16 +214,18 @@ map("n", "j", "<Plug>(accelerated_jk_gj)")
 map("n", "k", "<Plug>(accelerated_jk_gk)")
 
 -- plugins config ---------------------------------------------------------
-require("catppuccin").setup({
-  background = { dark = "macchiato" },
-  no_italic = true,
+require("tokyonight").setup({
+  style = "moon", -- moon, storm
+  styles = {
+    comments = { italic = false },
+    keywords = { italic = false },
+  }
 })
-vim.cmd.colorscheme "catppuccin"
+vim.cmd [[colorscheme tokyonight]]
 
 -- tree-sitter
 require("tree-sitter-manager").setup({
   auto_install = true,
-  -- Use built-in Neovim treesitter parsers
   noauto_install = {
     "c", "lua", "markdown", "markdown_inline", "query", "vim", "vimdoc"
   },
@@ -224,14 +236,10 @@ local actions = require "telescope.actions"
 require('telescope').setup {
   defaults = {
     prompt_prefix = ' ',
-    mappings = {
-      i = { ['<Leader>v'] = actions.select_vertical }
-    }
+    mappings = { i = { ['<Leader>v'] = actions.select_vertical } }
   },
   extensions = {
-    ["ui-select"] = {
-      require("telescope.themes").get_dropdown {}
-    }
+    ["ui-select"] = { require("telescope.themes").get_dropdown {} }
   }
 }
 require("telescope").load_extension("ui-select")
@@ -267,12 +275,8 @@ require("bufferline").setup {
 -- indent-blankline
 require("ibl").setup({
   exclude = { filetypes = { "lua", "cpp" } },
-  indent = { char = "┊" },
-  scope = {
-    show_start = false,
-    show_end = false,
-    highlight = { "Function", "Label" },
-  }
+  indent = { char = '▏' },
+  scope = { show_start = false, show_end = false, highlight = { "Function", "Label" } }
 })
 
 -- nvim-tree
@@ -327,12 +331,8 @@ vim.diagnostic.config({
 -- inline-diagnostic
 require("tiny-inline-diagnostic").setup({
   options = {
-    add_messages = {
-      display_count = true,
-    },
-    multilines = {
-      enabled = true,
-    },
+    add_messages = { display_count = true },
+    multilines = { enabled = true },
   },
 })
 
