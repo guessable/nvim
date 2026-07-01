@@ -55,6 +55,7 @@ vim.pack.add({
 	{ src = "https://github.com/rainbowhxch/accelerated-jk.nvim" },
 	{ src = "https://github.com/windwp/nvim-autopairs" },
 	{ src = "https://github.com/numToStr/Comment.nvim" },
+	{ src = "https://github.com/akinsho/toggleterm.nvim" },
 })
 map("n", "U", ":lua vim.pack.update()<CR>")
 
@@ -76,14 +77,6 @@ vim.api.nvim_create_autocmd("FileType", {
 	pattern = "*",
 	callback = function()
 		vim.opt_local.formatoptions:remove({ "c", "r" })
-	end,
-})
-vim.api.nvim_create_autocmd("BufEnter", {
-	pattern = "term://*",
-	callback = function()
-		if vim.bo.buftype == "terminal" then
-			vim.cmd.startinsert()
-		end
 	end,
 })
 
@@ -176,9 +169,6 @@ for i = 1, 9 do
 	map("t", "<Leader>t" .. i, "<C-\\><C-n>" .. i .. "gt")
 end
 
--- term
-map("n", "<Leader>tt", "<cmd>tab terminal<CR>i")
-
 -- Bufferline
 for i = 1, 9 do
 	map("n", "<Leader>b" .. i, "<Cmd>BufferLineGoToBuffer " .. i .. "<CR>")
@@ -211,6 +201,17 @@ map("n", "<C-_>", "<Plug>(comment_toggle_linewise_current)")
 map("x", "<C-_>", "<Plug>(comment_toggle_linewise_visual)")
 map("n", "j", "<Plug>(accelerated_jk_gj)")
 map("n", "k", "<Plug>(accelerated_jk_gk)")
+
+-- toggleterm
+vim.keymap.set({ "n", "t" }, "<Leader>tv", function()
+	require("toggleterm.terminal").Terminal:new({ id = 1, direction = "vertical" }):toggle()
+end)
+vim.keymap.set({ "n", "t" }, "<Leader>tt", function()
+	require("toggleterm.terminal").Terminal:new({ id = 2, direction = "tab" }):toggle()
+end)
+vim.keymap.set({ "n", "t" }, "<Leader>oc", function()
+	require("toggleterm.terminal").Terminal:new({ id = 3, cmd = "opencode", direction = "tab" }):toggle()
+end)
 
 -- plugins config ---------------------------------------------------------
 require("tokyonight").setup({
@@ -251,6 +252,9 @@ require("telescope").load_extension("ui-select")
 -- Session
 local config = require("session_manager.config")
 require("session_manager").setup({ autoload_mode = config.AutoloadMode.Disabled }) -- AutoloadMode.LastSession
+
+-- toggleterm
+require("toggleterm").setup({ size = vim.o.columns * 0.5, shade_terminals = false })
 
 -- bufferline
 require("bufferline").setup({
@@ -302,7 +306,7 @@ require("nvim-tree").setup({
 		vim.keymap.set("n", "o", api.node.open.edit, opts("Open"))
 		vim.keymap.set("n", "d", api.fs.remove, opts("Delete"))
 	end,
-	view = { width = 30 },
+	view = { width = 33 },
 	renderer = { group_empty = true },
 	filters = { dotfiles = true },
 })
