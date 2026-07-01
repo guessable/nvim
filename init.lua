@@ -32,28 +32,24 @@ vim.pack.add({
 	{ src = "https://github.com/saghen/blink.cmp", version = "v1", name = "blink.cmp" },
 	{ src = "https://github.com/stevearc/conform.nvim" },
 
+	{ src = "https://github.com/nvim-tree/nvim-tree.lua" },
+	{ src = "https://github.com/nvim-tree/nvim-web-devicons" },
 	{ src = "https://github.com/nvim-telescope/telescope.nvim" },
 	{ src = "https://github.com/nvim-telescope/telescope-ui-select.nvim" },
 	{ src = "https://github.com/nvim-lua/plenary.nvim" },
 	{ src = "https://github.com/Shatur/neovim-session-manager" },
-	{ src = "https://github.com/nvim-tree/nvim-tree.lua" },
-	{ src = "https://github.com/nvim-tree/nvim-web-devicons" },
 
 	{ src = "https://github.com/goolord/alpha-nvim" },
-	{ src = "https://github.com/karb94/neoscroll.nvim" },
 	{ src = "https://github.com/folke/tokyonight.nvim" },
-	{ src = "https://github.com/romus204/tree-sitter-manager.nvim" }, -- paru -S tree-sitter-cli
+	{ src = "https://github.com/romus204/tree-sitter-manager.nvim" },
 
 	{ src = "https://github.com/akinsho/bufferline.nvim" },
 	{ src = "https://github.com/nvim-lualine/lualine.nvim" },
-	{ src = "https://github.com/rachartier/tiny-cmdline.nvim" },
 	{ src = "https://github.com/rachartier/tiny-inline-diagnostic.nvim" },
+	{ src = "https://github.com/rachartier/tiny-cmdline.nvim" },
 
 	-----------------------------------------------------
-	{ src = "https://github.com/nvim-mini/mini.notify" },
-	{ src = "https://github.com/nvim-mini/mini.pairs" },
-	{ src = "https://github.com/nvim-mini/mini.comment" },
-	{ src = "https://github.com/nvim-mini/mini.indentscope" },
+	{ src = "https://github.com/nvim-mini/mini.nvim" },
 })
 vim.keymap.set("n", "U", "<cmd>lua vim.pack.update()<CR>", { silent = true, noremap = true })
 
@@ -136,11 +132,6 @@ vim.keymap.set("n", "<Leader>nh", "<cmd>nohl<CR>", opts)
 vim.keymap.set("n", "<C-s>", "<cmd>silent w<CR>", opts)
 vim.keymap.set("i", "<C-s>", "<Esc><cmd>silent w<CR>a", opts)
 
-vim.keymap.set("n", "<Up>", ":res +5<CR>", opts)
-vim.keymap.set("n", "<Down>", ":res -5<CR>", opts)
-vim.keymap.set("n", "<Left>", ":vertical resize-5<CR>", opts)
-vim.keymap.set("n", "<Right>", ":vertical resize+5<CR>", opts)
-
 vim.keymap.set("n", "<C-e>", "<End>", opts)
 vim.keymap.set("i", "<C-e>", "<Esc>$a", opts)
 vim.keymap.set("n", "<C-o>", "<C-w>o", opts)
@@ -161,12 +152,8 @@ for i = 1, 9 do
 	vim.keymap.set("t", "<Leader>t" .. i, "<C-\\><C-n>" .. i .. "gt", opts)
 end
 
--- opencode
-vim.keymap.set("n", "<Leader>oc", function()
-	vim.cmd.tabnew()
-	vim.cmd.terminal("opencode")
-	vim.cmd.startinsert()
-end, { desc = "opencode" })
+-- tab terminal
+vim.keymap.set("n", "<Leader>tt", "<cmd>tab terminal<CR>i", opts)
 
 -- run python code
 local function run_python()
@@ -188,7 +175,7 @@ for i = 1, 9 do
 	vim.keymap.set("n", "<Leader>b" .. i, "<Cmd>BufferLineGoToBuffer " .. i .. "<CR>", opts)
 end
 
--- telescope
+-- Telescope
 vim.keymap.set("n", "<Leader>ff", "<cmd>Telescope builtin theme=dropdown previewer=false<CR>", opts)
 vim.keymap.set("n", "<Leader>fh", "<cmd>Telescope oldfiles<CR>", opts)
 vim.keymap.set("n", "<Leader>fd", "<cmd>Telescope find_files<CR>", opts)
@@ -208,11 +195,8 @@ vim.keymap.set("n", "gd", "<cmd>Lspsaga peek_definition<CR>", opts)
 vim.keymap.set("n", "gD", "<cmd>Lspsaga goto_definition<CR>", opts)
 vim.keymap.set({ "n", "t" }, "<Leader>tf", "<cmd>Lspsaga term_toggle<CR>", opts)
 
--- nvim-tree
-vim.keymap.set("n", "<C-b>", "<cmd>NvimTreeToggle<CR>", opts)
-
--- smoothscroll
-require("neoscroll").setup({ mappings = { "<C-u>", "<C-d>" } })
+-- NvimTree
+vim.keymap.set("n", "<C-b>", "<cmd>NvimTreeToggle ./<CR>", opts)
 
 -- plugins config ---------------------------------------------------------
 require("tokyonight").setup({
@@ -233,6 +217,14 @@ require("mini.notify").setup()
 require("mini.pairs").setup()
 require("mini.comment").setup({ mappings = { comment_line = "<C-_>", comment_visual = "<C-_>" } })
 require("mini.indentscope").setup({ draw = { delay = 40 } })
+require("mini.animate").setup() -- <C-u>, <C-d>
+require("mini.jump2d").setup({ mappings = { start_jumping = "<CR>" } })
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = { "NvimTree", "alpha", "terminal" },
+	callback = function()
+		vim.b.miniindentscope_disable = true
+	end,
+})
 
 -- formatter
 require("conform").setup({
@@ -270,10 +262,12 @@ require("bufferline").setup({
 			require("bufferline").style_preset.no_bold,
 		},
 		offsets = {
-			filetype = "NvimTree",
-			text = "File Explorer",
-			highlight = "Directory",
-			text_align = "center",
+			{
+				filetype = "neo-tree",
+				text = "File Explorer",
+				highlight = "Directory",
+				text_align = "center",
+			},
 		},
 		custom_filter = function(bufnr)
 			local bt = vim.bo[bufnr].buftype
@@ -301,8 +295,12 @@ require("nvim-tree").setup({
 		vim.keymap.set("n", "o", api.node.open.edit, opts("Open"))
 		vim.keymap.set("n", "d", api.fs.remove, opts("Delete"))
 	end,
-	view = { width = 33 },
-	renderer = { group_empty = true },
+	view = { width = 35 },
+	renderer = {
+		group_empty = true,
+		indent_markers = { enable = true },
+		icons = { glyphs = { folder = { arrow_closed = "", arrow_open = "" } } },
+	},
 	filters = { dotfiles = true },
 })
 
@@ -331,18 +329,15 @@ vim.diagnostic.config({
 	severity_sort = false,
 })
 
--- lspsaga
-require("lspsaga").setup()
-
 -- tiny-inline
 require("tiny-inline-diagnostic").setup({
-	options = {
-		add_messages = { display_count = true },
-		multilines = { enabled = true },
-	},
+	options = { add_messages = { display_count = true }, multilines = { enabled = true } },
 })
 vim.o.cmdheight = 0
-require("tiny-cmdline").setup({ width = { value = "30%" }, title = { enabled = true } })
+require("tiny-cmdline").setup({ width = { value = "35%" }, title = { enabled = true } })
+
+-- lspsaga
+require("lspsaga").setup()
 
 -- blink
 require("blink.cmp").setup({
@@ -409,6 +404,7 @@ dashboard.section.buttons.val = {
 	dashboard.button("<Leader> t t", "  Term", "<cmd>tab terminal<CR>i"),
 	dashboard.button("<Leader> c f", "  Config", ":e ~/.config/nvim/init.lua<CR>"),
 	dashboard.button("<Leader> c h", "  Checkhealth", ":checkhealth<CR>"),
+	dashboard.button("q", "  Quit", ":qa!<CR>"),
 }
 dashboard.section.footer.val = { "-Δu = f" }
 alpha.setup(dashboard.config)
